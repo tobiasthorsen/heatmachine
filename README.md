@@ -1,2 +1,2 @@
 # heatmachine
-controller for heating devices
+controller for heating devices to really high temperatures.
