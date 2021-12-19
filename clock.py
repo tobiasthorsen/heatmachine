@@ -18,6 +18,7 @@ class Application(tk.Frame):
         self.pack()
         self.createWidgets()
 
+
     def createWidgets(self):
         self.now = tk.StringVar()
         self.time = tk.Label(self, font=('Helvetica', 24))
@@ -38,5 +39,6 @@ class Application(tk.Frame):
         self.after(1000, self.onUpdate)
 
 root = tk.Tk()
+root.attributes('-fullscreen', True)
 app = Application(master=root)
 root.mainloop()
