@@ -36,7 +36,7 @@ class Application(tk.Frame):
         # update displayed time
         self.now.set(current_iso8601())
         # schedule timer to call myself after 1 second
-        self.after(1000, self.onUpdate)
+        self.after(100, self.onUpdate)
 
 root = tk.Tk()
 root.attributes('-fullscreen', True)
