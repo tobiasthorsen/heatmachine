@@ -106,7 +106,7 @@ class Application(tk.Frame):
 
 root = tk.Tk()
 root.geometry('640x480')
-#root.attributes('-fullscreen', True)
+root.attributes('-fullscreen', True)
 root.update()
 #root.resizable(height = None, width = None)
 windowWidth = root.winfo_width()
