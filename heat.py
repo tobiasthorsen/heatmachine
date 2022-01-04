@@ -21,8 +21,8 @@ class Application(tk.Frame):
 	def __init__(self, master=None):
 		tk.Frame.__init__(self, master)
 		self.pack()
-		GPIO.setmode(GPIO.BOARD)
-		#GPIO.setmode(GPIO.BCM)
+		#GPIO.setmode(GPIO.BOARD)
+		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(4, GPIO.OUT)
 		self.createWidgets()
 
