@@ -44,12 +44,12 @@ class Application(tk.Frame):
 		self.now.set(current_iso8601())
 
 		onoff = 0	
-		if int(time.time()) % 2 == 0:
+		if int(time.time() * 10) % 2 == 0:
 			onoff = 1
 
 		GPIO.output(4,  onoff)
 		# schedule timer to call myself after 1 second
-		self.after(100, self.onUpdate)
+		self.after(10, self.onUpdate)
 
 
 root = tk.Tk()
