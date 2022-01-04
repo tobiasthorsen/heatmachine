@@ -68,7 +68,7 @@ class Application(tk.Frame):
 
 
 		self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
-		self.QUIT.pack(side="bottom")
+		#self.QUIT.pack(side="bottom")
 		self.QUIT.grid(column = 0, row = 1, pady=5,padx=10, sticky="n")
 		# to prevent the frame from adapting to its content :
 		"""
