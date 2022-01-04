@@ -11,7 +11,8 @@ from tkinter.ttk import Separator, Style
 
 from max31855 import MAX31855, MAX31855Error
 
-
+windowWidth = 100
+windowHeight = 100
 
 def current_iso8601():
 	"""Get current date and time in ISO8601"""
@@ -29,6 +30,12 @@ class Application(tk.Frame):
 		GPIO.setup(4, GPIO.OUT)
 		GPIO.output(4,  0)
 		self.createWidgets()
+	
+	def buttonClickOn(self):
+		GPIO.output(4,  1)
+
+	def buttonClickOff(self):
+		GPIO.output(4,  0)
 
 	def createWidgets(self):
 		"""self.now = tk.StringVar()
@@ -36,22 +43,33 @@ class Application(tk.Frame):
 		self.time.pack(side="top")
 		self.time["textvariable"] = self.now
 
-		self.QUIT = tk.Button(self, text="QUIT", fg="red",
-		                                    command=root.destroy)
-		self.QUIT.pack(side="bottom")
 """
-		left = tk.Frame(self, bg="black",width=100, height=100)
+		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=170)
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
-		left.pack_propagate(False)
-		left.grid(column=0, row = 0, pady=5 ,padx=10, sticky="n")
-		tk.Label(left, text="Left frame", fg="white", bg="black", anchor="center", justify="center").pack()
-
-
-		right= tk.Frame(self, bg="black", width=100,height=100)
-		right.pack_propagate(False)
+		temperatureFrame.pack_propagate(False)
+		temperatureFrame.grid(column=0, row = 0, pady=5 ,padx=10, sticky="n")
+		tk.Label(temperatureFrame, text="Kiln", fg="white", bg="black", anchor="center", justify="center").pack()
 		
-		right.grid(column=2, row = 0, pady=5,padx=10, sticky="n")
-		tk.Label(right, text="Right frame", fg="white", bg="black").pack()
+		
+		self.temperatureLabel = tk.Label(temperatureFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 65)).pack()
+		tk.Label(temperatureFrame, text="Cpu", fg="white", bg="black", anchor="center", justify="center").pack()
+		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25)).pack()
+
+		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=170)
+		activeProgramFrame.pack_propagate(False)
+		
+		activeProgramFrame.grid(column=1, row = 0, pady=5,padx=10, sticky="n")
+		tk.Label(activeProgramFrame, text="Actions", fg="white", bg="black").pack()
+
+
+		self.turnOn = tk.Button(activeProgramFrame, width=25, text="ON", fg="red", command=self.buttonClickOn).pack()
+		self.turnOff = tk.Button(activeProgramFrame, width=25, text="OFF", fg="red", command=self.buttonClickOff).pack()
+
+
+
+		self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
+		self.QUIT.pack(side="bottom")
+		self.QUIT.grid(column = 0, row = 1, pady=5,padx=10, sticky="n")
 		# to prevent the frame from adapting to its content :
 		"""
 		
@@ -71,7 +89,8 @@ class Application(tk.Frame):
 		"""
 		#self.onUpdate()
 		#self.now.set(current_iso8601())
-
+	
+	
 	def onUpdate(self):
 		# update displayed time
 		# self.now.set(current_iso8601())
@@ -87,11 +106,12 @@ class Application(tk.Frame):
 
 root = tk.Tk()
 root.geometry('640x480')
-root.attributes('-fullscreen', True)
+#root.attributes('-fullscreen', True)
 root.update()
 #root.resizable(height = None, width = None)
-
-print(root.winfo_height())
+windowWidth = root.winfo_width()
+windowHeight = root.winfo_height()
+#print(root.winfo_height())
 app = Application(master=root)
 #root.attributes('-fullscreen', True)
 root.mainloop()
