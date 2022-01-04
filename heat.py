@@ -11,14 +11,14 @@ import RPi.GPIO as GPIO
 from max31855 import MAX31855, MAX31855Error
 
 def current_iso8601():
-    """Get current date and time in ISO8601"""
-    # https://en.wikipedia.org/wiki/ISO_8601
-    # https://xkcd.com/1179/
-    return time.time()
-    # return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+	"""Get current date and time in ISO8601"""
+	# https://en.wikipedia.org/wiki/ISO_8601
+	# https://xkcd.com/1179/
+	return time.time()
+	# return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 
 class Application(tk.Frame):
-    def __init__(self, master=None):
+	def __init__(self, master=None):
 		tk.Frame.__init__(self, master)
 		self.pack()
 		self.createWidgets()
@@ -26,20 +26,20 @@ class Application(tk.Frame):
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(4, GPIO.OUT)
 
-    def createWidgets(self):
-        self.now = tk.StringVar()
-        self.time = tk.Label(self, font=('Helvetica', 24))
-        self.time.pack(side="top")
-        self.time["textvariable"] = self.now
+	def createWidgets(self):
+		self.now = tk.StringVar()
+		self.time = tk.Label(self, font=('Helvetica', 24))
+		self.time.pack(side="top")
+		self.time["textvariable"] = self.now
 
-        self.QUIT = tk.Button(self, text="QUIT", fg="red",
-                                            command=root.destroy)
-        self.QUIT.pack(side="bottom")
+		self.QUIT = tk.Button(self, text="QUIT", fg="red",
+		                                    command=root.destroy)
+		self.QUIT.pack(side="bottom")
 
-        # initial time display
-        self.onUpdate()
+		# initial time display
+		self.onUpdate()
 
-    def onUpdate(self):
+	def onUpdate(self):
         # update displayed time
         self.now.set(current_iso8601())
         
