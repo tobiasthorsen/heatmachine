@@ -19,10 +19,10 @@ def current_iso8601():
 
 class Application(tk.Frame):
     def __init__(self, master=None):
-        tk.Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-        GPIO.setmode(GPIO.BOARD)
+		tk.Frame.__init__(self, master)
+		self.pack()
+		self.createWidgets()
+		GPIO.setmode(GPIO.BOARD)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(4, GPIO.OUT)
 
@@ -42,7 +42,12 @@ class Application(tk.Frame):
     def onUpdate(self):
         # update displayed time
         self.now.set(current_iso8601())
-        GPIO.output(channel, state)
+        
+        onoff = 0	
+        if int(time.time()) % 2 == 0:
+        	onoff = 1
+
+        GPIO.output(4,  onoff)
         # schedule timer to call myself after 1 second
         self.after(100, self.onUpdate)
 
