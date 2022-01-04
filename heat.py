@@ -7,8 +7,11 @@ import tkinter as tk
 import time
 import sys
 import RPi.GPIO as GPIO
+from tkinter.ttk import Separator, Style
 
 from max31855 import MAX31855, MAX31855Error
+
+
 
 def current_iso8601():
 	"""Get current date and time in ISO8601"""
@@ -24,10 +27,11 @@ class Application(tk.Frame):
 		#GPIO.setmode(GPIO.BOARD)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(4, GPIO.OUT)
+		GPIO.output(4,  0)
 		self.createWidgets()
 
 	def createWidgets(self):
-		self.now = tk.StringVar()
+		"""self.now = tk.StringVar()
 		self.time = tk.Label(self, font=('Helvetica', 24))
 		self.time.pack(side="top")
 		self.time["textvariable"] = self.now
@@ -35,10 +39,38 @@ class Application(tk.Frame):
 		self.QUIT = tk.Button(self, text="QUIT", fg="red",
 		                                    command=root.destroy)
 		self.QUIT.pack(side="bottom")
+"""
+		left = tk.Frame(self, bg="black",width=100, height=100)
+		#left.pack(fill="both", expand=True) # pack_propagate(False)
+		left.pack_propagate(False)
+		left.grid(column=0, row = 0, pady=5 ,padx=10, sticky="n")
+		tk.Label(left, text="Left frame", fg="white", bg="black", anchor="center", justify="center").pack()
 
+
+		right= tk.Frame(self, bg="black", width=100,height=100)
+		right.pack_propagate(False)
+		
+		right.grid(column=2, row = 0, pady=5,padx=10, sticky="n")
+		tk.Label(right, text="Right frame", fg="white", bg="black").pack()
+		# to prevent the frame from adapting to its content :
+		"""
+		
+		
+		sep = Separator(self, orient="vertical")
+		sep.grid(column=1, row=0, sticky="ns")
+		"""
+		#fen = tk.Tk()
+		"""
+
+		# edit: To change the color of the separator, you need to use a style
+		sty = Style(root)
+		sty.configure("TSeparator", background="red")
+
+		
 		# initial time display
-		self.onUpdate()
-		self.now.set(current_iso8601())
+		"""
+		#self.onUpdate()
+		#self.now.set(current_iso8601())
 
 	def onUpdate(self):
 		# update displayed time
@@ -48,15 +80,20 @@ class Application(tk.Frame):
 		if int(time.time() ) % 2 == 0:
 			onoff = 1
 
-		GPIO.output(4,  onoff)
+		# GPIO.output(4,  onoff)
 		# schedule timer to call myself after 1 second
 		self.after(10, self.onUpdate)
 
 
 root = tk.Tk()
-#root.attributes('-fullscreen', True)
-app = Application(master=root)
+root.geometry('640x480')
 root.attributes('-fullscreen', True)
+root.update()
+#root.resizable(height = None, width = None)
+
+print(root.winfo_height())
+app = Application(master=root)
+#root.attributes('-fullscreen', True)
 root.mainloop()
 
 """
