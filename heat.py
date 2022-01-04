@@ -45,7 +45,7 @@ class Application(tk.Frame):
 		# self.now.set(current_iso8601())
 
 		onoff = 0	
-		if int(time.time() * 10) % 2 == 0:
+		if int(time.time() ) % 2 == 0:
 			onoff = 1
 
 		GPIO.output(4,  onoff)
@@ -56,6 +56,7 @@ class Application(tk.Frame):
 root = tk.Tk()
 #root.attributes('-fullscreen', True)
 app = Application(master=root)
+root.attributes('-fullscreen', True)
 root.mainloop()
 
 """
