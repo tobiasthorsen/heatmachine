@@ -38,10 +38,11 @@ class Application(tk.Frame):
 
 		# initial time display
 		self.onUpdate()
+		self.now.set(current_iso8601())
 
 	def onUpdate(self):
 		# update displayed time
-		self.now.set(current_iso8601())
+		# self.now.set(current_iso8601())
 
 		onoff = 0	
 		if int(time.time() * 10) % 2 == 0:
