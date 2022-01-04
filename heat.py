@@ -6,6 +6,7 @@
 import tkinter as tk
 import time
 import sys
+import RPi.GPIO as GPIO
 
 from max31855 import MAX31855, MAX31855Error
 
@@ -13,14 +14,17 @@ def current_iso8601():
     """Get current date and time in ISO8601"""
     # https://en.wikipedia.org/wiki/ISO_8601
     # https://xkcd.com/1179/
-    return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    return time.time()
+    # return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 
 class Application(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
         self.pack()
         self.createWidgets()
-
+        GPIO.setmode(GPIO.BOARD)
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(4, GPIO.OUT)
 
     def createWidgets(self):
         self.now = tk.StringVar()
@@ -38,8 +42,10 @@ class Application(tk.Frame):
     def onUpdate(self):
         # update displayed time
         self.now.set(current_iso8601())
+        GPIO.output(channel, state)
         # schedule timer to call myself after 1 second
         self.after(100, self.onUpdate)
+
 
 root = tk.Tk()
 #root.attributes('-fullscreen', True)
