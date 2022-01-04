@@ -47,7 +47,7 @@ class Application(tk.Frame):
 		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=170)
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
 		temperatureFrame.pack_propagate(False)
-		temperatureFrame.grid(column=0, row = 0, pady=5 ,padx=10, sticky="n")
+		temperatureFrame.grid(column=0, row = 0, pady=2 ,padx=2, sticky="n")
 		tk.Label(temperatureFrame, text="Kiln", fg="white", bg="black", anchor="center", justify="center").pack()
 		
 		
@@ -58,18 +58,27 @@ class Application(tk.Frame):
 		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=170)
 		activeProgramFrame.pack_propagate(False)
 		
-		activeProgramFrame.grid(column=1, row = 0, pady=5,padx=10, sticky="n")
+		activeProgramFrame.grid(column=1, row = 0, pady=2,padx=2, sticky="n")
 		tk.Label(activeProgramFrame, text="Actions", fg="white", bg="black").pack()
 
 
-		self.turnOn = tk.Button(activeProgramFrame, width=25, text="ON", fg="red", command=self.buttonClickOn).pack()
-		self.turnOff = tk.Button(activeProgramFrame, width=25, text="OFF", fg="red", command=self.buttonClickOff).pack()
+		self.turnOn = tk.Button(activeProgramFrame, width=25, height=2, text="ON", fg="red", command=self.buttonClickOn).pack()
+		#self.turnOn.grid(column=0, row = 0)
+		#sep = tk.Separator(activeProgramFrame,orient='horizontal')
 
+		self.turnOff = tk.Button(activeProgramFrame, width=25, height=2, text="OFF", fg="red", command=self.buttonClickOff).pack()
+		#self.turnOff.grid(column=0, row = 1)
+
+
+		temperatureGraph = tk.Frame(self, bg="black", width=windowWidth*.94,height=270)
+		temperatureGraph.pack_propagate(False)
+		
+		temperatureGraph.grid(column=0, columnspan=2, row = 1, pady=5,padx=10, sticky="n")
 
 
 		self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
 		#self.QUIT.pack(side="bottom")
-		self.QUIT.grid(column = 0, row = 1, pady=5,padx=10, sticky="n")
+		self.QUIT.grid(column = 0, row = 2,  pady=5,padx=10, sticky="n")
 		# to prevent the frame from adapting to its content :
 		"""
 		
