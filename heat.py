@@ -29,8 +29,13 @@ class Application(tk.Frame):
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(4, GPIO.OUT)
 		GPIO.output(4,  0)
+		self.thermocouple = MAX31855(15,14,18)
+		self.setupTemperatureArray()
 		self.createWidgets()
 	
+	def setupTemperatureArray(self):
+		self.temparray = []
+
 	def buttonClickOn(self):
 		GPIO.output(4,  1)
 
@@ -96,13 +101,21 @@ class Application(tk.Frame):
 		
 		# initial time display
 		"""
-		#self.onUpdate()
+		self.onUpdate()
 		#self.now.set(current_iso8601())
 	
 	
 	def onUpdate(self):
 		# update displayed time
 		# self.now.set(current_iso8601())
+		rj = self.thermocouple.get_rj()
+		try:
+			tc = self.thermocouple.get()
+		except MAX31855Error as e:
+			tc = "Error: "+ e.value
+			#running = False
+
+		print("tc: {} and rj: {}".format(tc, rj))
 
 		onoff = 0	
 		if int(time.time() ) % 2 == 0:
@@ -110,12 +123,12 @@ class Application(tk.Frame):
 
 		# GPIO.output(4,  onoff)
 		# schedule timer to call myself after 1 second
-		self.after(10, self.onUpdate)
+		self.after(1000, self.onUpdate)
 
 
 root = tk.Tk()
-root.geometry('640x480')
-root.attributes('-fullscreen', True)
+root.geometry('400x300')
+#root.attributes('-fullscreen', True)
 root.update()
 #root.resizable(height = None, width = None)
 windowWidth = root.winfo_width()
