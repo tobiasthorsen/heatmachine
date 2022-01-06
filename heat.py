@@ -114,15 +114,23 @@ class Application(tk.Frame):
 		# update displayed time
 		# self.now.set(current_iso8601())
 		rj = self.thermocouple.get_rj()
+		gottemperature = false
 		try:
 			tc = self.thermocouple.get()
+			gottemperature = true
 		except MAX31855Error as e:
 			tc = "Error: "+ e.value
 			#running = False
 
 		print("tc: {} and rj: {}".format(tc, rj))
 		
-		self.temperatureLabel.configure(text='{0:.1f}'.format(tc)) 
+
+
+		if gottemperature:
+			self.temperatureLabel.configure(text='{0:.1f}'.format(tc)) 
+		else:
+			self.temperatureLabel.configure(text='X') 
+
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(rj)) 
 		#self.temperatureLabel['text'] = tc
 		#self.cpuTemperatureLabel['text'] = rj
