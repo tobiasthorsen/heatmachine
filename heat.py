@@ -50,7 +50,7 @@ class Application(tk.Frame):
 		self.time["textvariable"] = self.now
 
 """
-		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=170)
+		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=190)
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
 		temperatureFrame.pack_propagate(False)
 		temperatureFrame.grid(column=0, row = 0, pady=2 ,padx=2, sticky="n")
@@ -65,7 +65,7 @@ class Application(tk.Frame):
 		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 		self.cpuTemperatureLabel.pack()
 
-		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=170)
+		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=190)
 		activeProgramFrame.pack_propagate(False)
 		
 		activeProgramFrame.grid(column=1, row = 0, pady=2,padx=2, sticky="n")
@@ -122,8 +122,8 @@ class Application(tk.Frame):
 
 		print("tc: {} and rj: {}".format(tc, rj))
 		
-		self.temperatureLabel.configure(text=tc) 
-		self.cpuTemperatureLabel.configure(text=rj) 
+		self.temperatureLabel.configure(text='{0:.1f}'.format(tc)) 
+		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(rj)) 
 		#self.temperatureLabel['text'] = tc
 		#self.cpuTemperatureLabel['text'] = rj
 
