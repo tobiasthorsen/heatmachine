@@ -32,6 +32,7 @@ class Application(tk.Frame):
 		self.thermocouple = MAX31855(15,14,18)
 		self.setupTemperatureArray()
 		self.createWidgets()
+		self.onUpdate() #// start updating
 	
 	def setupTemperatureArray(self):
 		self.temparray = []
@@ -56,9 +57,13 @@ class Application(tk.Frame):
 		tk.Label(temperatureFrame, text="Kiln", fg="white", bg="black", anchor="center", justify="center").pack()
 		
 		
-		self.temperatureLabel = tk.Label(temperatureFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 65)).pack()
+		self.temperatureLabel = tk.Label(temperatureFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 65))
+		self.temperatureLabel.pack()
+		self.temperatureLabel.configure(text="65") #//['text'] = 68
+		
 		tk.Label(temperatureFrame, text="Cpu", fg="white", bg="black", anchor="center", justify="center").pack()
-		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25)).pack()
+		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
+		self.cpuTemperatureLabel.pack()
 
 		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=170)
 		activeProgramFrame.pack_propagate(False)
@@ -101,7 +106,7 @@ class Application(tk.Frame):
 		
 		# initial time display
 		"""
-		self.onUpdate()
+		
 		#self.now.set(current_iso8601())
 	
 	
@@ -116,6 +121,11 @@ class Application(tk.Frame):
 			#running = False
 
 		print("tc: {} and rj: {}".format(tc, rj))
+		
+		self.temperatureLabel.configure(text=tc) 
+		self.cpuTemperatureLabel.configure(text=rj) 
+		#self.temperatureLabel['text'] = tc
+		#self.cpuTemperatureLabel['text'] = rj
 
 		onoff = 0	
 		if int(time.time() ) % 2 == 0:
