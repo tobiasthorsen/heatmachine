@@ -114,10 +114,10 @@ class Application(tk.Frame):
 		# update displayed time
 		# self.now.set(current_iso8601())
 		rj = self.thermocouple.get_rj()
-		gottemperature = false
+		gottemperature = 0
 		try:
 			tc = self.thermocouple.get()
-			gottemperature = true
+			gottemperature = 1
 		except MAX31855Error as e:
 			tc = "Error: "+ e.value
 			#running = False
