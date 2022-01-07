@@ -46,13 +46,14 @@ class Application(tk.Frame):
 	
 	def setupTemperatureArray(self):
 		self.temparray = []
+		self.lastTemperatureLogTime = 0
 		try:
 			file = open('./temperatures.json', 'r')
 			#print file
 			self.temparray = json.load(file)
 		except:
   			print("No temperature file. It will be created")
-  		self.lastTemperatureLogTime = 0
+  		
 
 
 	def logTemperature(self, _tempThermo, _tempInternal):
