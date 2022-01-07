@@ -70,11 +70,12 @@ class Application(tk.Frame):
 	
 	def drawTemperatureGraph(self) :
 		#self.temperatureCanvas.create_line(0,0,100,100)
+		self.temperatureCanvas.delete("all")
 		self.temperatureCanvas.create_rectangle(0, 0, self.canvas_width, self.canvas_height, fill="#003366")
 		# draw the grid first.
 		nows = time.time()
 		now = datetime.now()
-		hoursprev = 1
+		hoursprev = 7
 		hoursahead = 1
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
@@ -230,9 +231,9 @@ class Application(tk.Frame):
 
 		#print("tc: {} and rj: {}".format(tc, rj))
 		
-		if platform == "darwin":
-			tc = math.cos(time.time()/60) * 100 + 200
-			rj = math.sin(time.time()/60) * 25 + 25
+		if platform == "darwin": # simulate some stuff to display
+			tc = math.cos(time.time()/60/40) * 300 + 400
+			rj = math.sin(time.time()/60/30) * 25 + 25
 
 
 		if gottemperature:
