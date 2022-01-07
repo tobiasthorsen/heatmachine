@@ -51,7 +51,7 @@ class Application(tk.Frame):
 			#print file
 			self.temparray = json.load(file)
 		except:
-  			print("An exception occurred")
+  			print("No temperature file. It will be created")
   		self.lastTemperatureLogTime = 0
 
 
