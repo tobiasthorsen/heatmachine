@@ -61,7 +61,7 @@ class Application(tk.Frame):
 		if (t >= 1):
 			self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal} )# Temperature(tempThermo, tempInternal))
 			self.lastTemperatureLogTime=time.time()
-			self.drawTemperatureGraph()
+			#self.drawTemperatureGraph()
 
 			if len(self.temparray) % 10 == 0:
 				self.saveTempArray()
