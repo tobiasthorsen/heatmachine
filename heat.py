@@ -69,11 +69,22 @@ class Application(tk.Frame):
 		now = datetime.now()
 		hoursprev = 1
 		hoursahead = 1
-		tempmax = 600
-		tempmin = 0
-
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
+
+		tempmax = 0
+		tempmin = 0
+
+		# find tempmin and max
+		for t in self.temparray:
+			if (t["time"]<timestart):
+				continue
+			if (t["tempThermo"] > tempmax):
+				tempmax = t["tempThermo"]
+
+		tempmax+= 10
+		
+		self.temperatureCanvas.create_text(self.canvas_width-20, 20, text=str(int(tempmax)), fill="yellow", font=('Helvetica 13 bold'))
 
 		
 
