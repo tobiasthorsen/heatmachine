@@ -7,10 +7,13 @@ import tkinter as tk
 import time
 import sys
 import RPi.GPIO as GPIO
+import json
+import math
 from tkinter.ttk import Separator, Style
-
+from sys import platform
 from max31855 import MAX31855, MAX31855Error
-
+from datetime import datetime
+print (platform)
 windowWidth = 100
 windowHeight = 100
 
@@ -20,6 +23,13 @@ def current_iso8601():
 	# https://xkcd.com/1179/
 	return time.time()
 	# return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+
+class Temperature:
+  def __init__(self, tempThermo, tempInternal):
+    self.tempThermo = tempThermo
+    self.tempInternal = tempInternal
+
+
 
 class Application(tk.Frame):
 	def __init__(self, master=None):
@@ -36,6 +46,76 @@ class Application(tk.Frame):
 	
 	def setupTemperatureArray(self):
 		self.temparray = []
+		try:
+			file = open('./temperatures.json', 'r')
+			#print file
+			self.temparray = json.load(file)
+		except:
+  			print("An exception occurred")
+
+
+
+	def logTemperature(self, _tempThermo, _tempInternal):
+		self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal} )# Temperature(tempThermo, tempInternal))
+		if len(self.temparray) % 10 == 0:
+			self.saveTempArray()
+			self.drawTemperatureGraph()
+	
+	def drawTemperatureGraph(self) :
+		#self.temperatureCanvas.create_line(0,0,100,100)
+		self.temperatureCanvas.create_rectangle(0, 0, self.canvas_width, self.canvas_height, fill="#003366")
+		# draw the grid first.
+		nows = time.time()
+		now = datetime.now()
+		hoursprev = 1
+		hoursahead = 1
+		tempmax = 600
+		tempmin = 0
+
+		timestart = nows - hoursprev * 60 * 60 - now.second
+		timeend = nows + hoursahead * 60 * 60 - now.second
+
+		
+
+		t = timestart
+		timeoff = 60 - now.minute
+		pixelsprminute = float(self.canvas_width) / (float(hoursahead) + float(hoursprev)) / 60
+		pixelsprdegree = float(self.canvas_height) / (tempmax - tempmin)
+		print "pixelsprdegree " + str(pixelsprdegree)
+		hour = now.hour - hoursprev + 1
+		while t<timeend:
+			# draw a line at this point + offset (each hour bar)
+			x = ((t-timestart)/60 + timeoff) * pixelsprminute
+			self.temperatureCanvas.create_line(x,0,x,self.canvas_height)
+			timetext = str((hour + 24) % 24) + ":00"
+			self.temperatureCanvas.create_text(x, self.canvas_height-20, text=timetext, fill="white", font=('Helvetica 15 bold'))
+			t+=(60*60)
+			hour += 1
+
+		# draw a bar at the now time.
+		x = (nows-timestart) / 60 * pixelsprminute
+		self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="white")
+
+		# draw the graphs..		
+		prevx = -1
+		prevy = 0
+		for t in self.temparray:
+			if (t["time"]<timestart):
+				continue
+			x = (t["time"] - timestart) / 60 * pixelsprminute
+			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
+
+			self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+
+			prevx = x
+			prevy = y
+			#print(t["time"])
+		
+	
+	def saveTempArray(self):
+		#print json.dumps(self.temparray)
+		tempfile = open('./temperatures.json', 'w')
+		json.dump(self.temparray, tempfile)
 
 	def buttonClickOn(self):
 		GPIO.output(4,  1)
@@ -72,11 +152,13 @@ class Application(tk.Frame):
 		tk.Label(activeProgramFrame, text="Actions", fg="white", bg="black").pack()
 
 
-		self.turnOn = tk.Button(activeProgramFrame, width=25, height=2, text="ON", fg="red", command=self.buttonClickOn).pack()
+		self.turnOn = tk.Button(activeProgramFrame, width=25, height=2, text="ON", fg="red", command=self.buttonClickOn)
+		self.turnOn.pack()
 		#self.turnOn.grid(column=0, row = 0)
 		#sep = tk.Separator(activeProgramFrame,orient='horizontal')
 
-		self.turnOff = tk.Button(activeProgramFrame, width=25, height=2, text="OFF", fg="red", command=self.buttonClickOff).pack()
+		self.turnOff = tk.Button(activeProgramFrame, width=25, height=2, text="OFF", fg="red", command=self.buttonClickOff)
+		self.turnOff.pack()
 		#self.turnOff.grid(column=0, row = 1)
 
 
@@ -85,6 +167,10 @@ class Application(tk.Frame):
 		
 		temperatureGraph.grid(column=0, columnspan=2, row = 1, pady=5,padx=10, sticky="n")
 
+		self.canvas_width = windowWidth*.9
+		self.canvas_height = 240
+		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
+		self.temperatureCanvas.pack()
 
 		self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
 		#self.QUIT.pack(side="bottom")
@@ -122,16 +208,24 @@ class Application(tk.Frame):
 			tc = "Error: "+ e.value
 			#running = False
 
-		print("tc: {} and rj: {}".format(tc, rj))
+		#print("tc: {} and rj: {}".format(tc, rj))
 		
+		if platform == "darwin":
+			tc = math.cos(time.time()/60) * 100 + 200
+			rj = math.sin(time.time()/60) * 25 + 25
 
 
 		if gottemperature:
 			self.temperatureLabel.configure(text='{0:.1f}'.format(tc)) 
 		else:
 			self.temperatureLabel.configure(text='X') 
+			tc = 0
+		
 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(rj)) 
+
+		self.logTemperature(tc,rj)
+
 		#self.temperatureLabel['text'] = tc
 		#self.cpuTemperatureLabel['text'] = rj
 
@@ -141,7 +235,7 @@ class Application(tk.Frame):
 
 		# GPIO.output(4,  onoff)
 		# schedule timer to call myself after 1 second
-		self.after(1000, self.onUpdate)
+		self.after(250, self.onUpdate)
 
 
 root = tk.Tk()
