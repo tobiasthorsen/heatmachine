@@ -81,7 +81,7 @@ class Application(tk.Frame):
 		timeoff = 60 - now.minute
 		pixelsprminute = float(self.canvas_width) / (float(hoursahead) + float(hoursprev)) / 60
 		pixelsprdegree = float(self.canvas_height) / (tempmax - tempmin)
-		print "pixelsprdegree " + str(pixelsprdegree)
+		#print "pixelsprdegree " + str(pixelsprdegree)
 		hour = now.hour - hoursprev + 1
 		while t<timeend:
 			# draw a line at this point + offset (each hour bar)
