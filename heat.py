@@ -88,7 +88,7 @@ class Application(tk.Frame):
 			self.temparray.pop(0)
 			#print ("can delete", idx)
 			idx += 1 
-		print("deleted ", idx)
+		#print("deleted ", idx)
 
 
 		# find tempmin and max
@@ -132,7 +132,7 @@ class Application(tk.Frame):
 			x = (t["time"] - timestart) / 60 * pixelsprminute
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
 			dx = x - prevx
-			if (dx>1 ):#and x-prevx>1):
+			if (dx>2 ):#and x-prevx>1):
 				if (dx < 4):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				prevx = x
