@@ -132,8 +132,8 @@ class Application(tk.Frame):
 			x = (t["time"] - timestart) / 60 * pixelsprminute
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
 			dx = x - prevx
-			if (dx>2 ):#and x-prevx>1):
-				if (dx < 4):
+			if (dx>4 ):#and x-prevx>1):
+				if (dx < 8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				prevx = x
 				prevy = y
