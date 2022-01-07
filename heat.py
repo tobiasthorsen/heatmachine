@@ -65,7 +65,7 @@ class Application(tk.Frame):
 
 			if len(self.temparray) % 10 == 0:
 				self.saveTempArray()
-				print len(self.temparray)
+				print (len(self.temparray))
 			
 	
 	def drawTemperatureGraph(self) :
