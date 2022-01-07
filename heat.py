@@ -173,23 +173,23 @@ class Application(tk.Frame):
 		tk.Label(activeProgramFrame, text="Actions", fg="white", bg="black").pack()
 
 
-		self.turnOn = tk.Button(activeProgramFrame, width=25, height=2, text="ON", fg="red", command=self.buttonClickOn)
+		self.turnOn = tk.Button(activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 		self.turnOn.pack()
 		#self.turnOn.grid(column=0, row = 0)
 		#sep = tk.Separator(activeProgramFrame,orient='horizontal')
 
-		self.turnOff = tk.Button(activeProgramFrame, width=25, height=2, text="OFF", fg="red", command=self.buttonClickOff)
+		self.turnOff = tk.Button(activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
 		self.turnOff.pack()
 		#self.turnOff.grid(column=0, row = 1)
 
 
-		temperatureGraph = tk.Frame(self, bg="black", width=windowWidth*.94,height=270)
+		temperatureGraph = tk.Frame(self, bg="black", width=windowWidth*.95,height=270)
 		temperatureGraph.pack_propagate(False)
 		
-		temperatureGraph.grid(column=0, columnspan=2, row = 1, pady=5,padx=10, sticky="n")
+		temperatureGraph.grid(column=0, columnspan=2, row = 1, pady=0,padx=0, sticky="n")
 
-		self.canvas_width = windowWidth*.9
-		self.canvas_height = 240
+		self.canvas_width = windowWidth*.95
+		self.canvas_height = 270
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
 
