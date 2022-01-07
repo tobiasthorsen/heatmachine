@@ -65,7 +65,7 @@ class Application(tk.Frame):
 
 			if len(self.temparray) % 10 == 0:
 				self.saveTempArray()
-				#print len(self.temparray)
+				print len(self.temparray)
 			
 	
 	def drawTemperatureGraph(self) :
@@ -122,12 +122,13 @@ class Application(tk.Frame):
 				continue
 			x = (t["time"] - timestart) / 60 * pixelsprminute
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
+			dx = x - prevx
+			if (dx>1 ):#and x-prevx>1):
+				if (dx < 4):
+					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+				prevx = x
+				prevy = y
 
-			if (x-prevx<4):
-				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
-
-			prevx = x
-			prevy = y
 			#print(t["time"])
 		
 	
