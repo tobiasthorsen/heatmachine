@@ -52,14 +52,20 @@ class Application(tk.Frame):
 			self.temparray = json.load(file)
 		except:
   			print("An exception occurred")
-
+  		self.lastTemperatureLogTime = 0
 
 
 	def logTemperature(self, _tempThermo, _tempInternal):
-		self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal} )# Temperature(tempThermo, tempInternal))
-		if len(self.temparray) % 10 == 0:
-			self.saveTempArray()
+		t = time.time() - self.lastTemperatureLogTime
+		if (t >= 1):
+			self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal} )# Temperature(tempThermo, tempInternal))
+			self.lastTemperatureLogTime=time.time()
 			self.drawTemperatureGraph()
+
+			if len(self.temparray) % 10 == 0:
+				self.saveTempArray()
+				#print len(self.temparray)
+			
 	
 	def drawTemperatureGraph(self) :
 		#self.temperatureCanvas.create_line(0,0,100,100)
