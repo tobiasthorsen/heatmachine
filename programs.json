@@ -1,0 +1,20 @@
+{
+	"manual": {
+		"type": "manual"
+	},
+
+	"fixeddegrees": {
+		"type": "hold",
+		"temperature": 35
+	},
+
+	"steadyrise": {
+		"type": "graph",
+		"graph" : [
+			{"time":5, "temperature":30},
+			{"time":10, "temperature":40},
+			{"time":25, "temperature":45}
+		]
+	}
+	
+}

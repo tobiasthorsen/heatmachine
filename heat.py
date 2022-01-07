@@ -9,13 +9,18 @@ import sys
 import RPi.GPIO as GPIO
 import json
 import math
-from tkinter.ttk import Separator, Style
+#from tkinter.ttk import Separator, Style
+from tkinter import ttk
+from tkinter import *
 from sys import platform
 from max31855 import MAX31855, MAX31855Error
 from datetime import datetime
+from functools import partial
 print (platform)
 windowWidth = 100
 windowHeight = 100
+
+
 
 def current_iso8601():
 	"""Get current date and time in ISO8601"""
@@ -41,9 +46,14 @@ class Application(tk.Frame):
 		GPIO.output(4,  0)
 		self.thermocouple = MAX31855(15,14,18)
 		self.setupTemperatureArray()
+		self.loadPrograms()
 		self.createWidgets()
 		self.onUpdate() #// start updating
 	
+	def loadPrograms(self):
+		file = open('./programs.json', 'r')
+		self.programs = json.load(file)
+
 	def setupTemperatureArray(self):
 		self.temparray = []
 		self.lastTemperatureLogTime = 0
@@ -75,7 +85,7 @@ class Application(tk.Frame):
 		# draw the grid first.
 		nows = time.time()
 		now = datetime.now()
-		hoursprev = 7
+		hoursprev = 1
 		hoursahead = 1
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
@@ -201,9 +211,25 @@ class Application(tk.Frame):
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
 
+		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.95,height=100)
+		activeProgramFrame.pack_propagate(False)
+		activeProgramFrame.grid(column=0, columnspan=2, row = 2, pady=2,padx=2, sticky="n")
+
+		separator = ttk.Separator(activeProgramFrame, orient='vertical')
+		separator.pack(side=LEFT, fill="y", padx=10, pady=0)
+
+		for x in self.programs:
+			btn = tk.Button(activeProgramFrame, text=x, fg="red", width=12, height = 3, command=partial(self.onProgramClick, x))
+			btn.pack(side=LEFT)
+			separator = ttk.Separator(activeProgramFrame, orient='vertical')
+			separator.pack(side=LEFT, fill="y", padx=10, pady=0)
+			self.programs[x]["button"] = btn
+			print(x)
+
+
 		self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
 		#self.QUIT.pack(side="bottom")
-		self.QUIT.grid(column = 0, row = 2,  pady=5,padx=10, sticky="n")
+		self.QUIT.grid(column = 0, row = 3,  pady=5,padx=10, sticky="n")
 		# to prevent the frame from adapting to its content :
 		"""
 		
@@ -224,6 +250,8 @@ class Application(tk.Frame):
 		
 		#self.now.set(current_iso8601())
 	
+	def onProgramClick(self, program):
+		print("click program: ", program)
 	
 	def onUpdate(self):
 		# update displayed time
