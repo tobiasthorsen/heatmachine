@@ -53,6 +53,7 @@ class Application(tk.Frame):
 	def loadPrograms(self):
 		file = open('./programs.json', 'r')
 		self.programs = json.load(file)
+		self.programbuttons = {}
 
 	def setupTemperatureArray(self):
 		self.temparray = []
@@ -184,26 +185,14 @@ class Application(tk.Frame):
 		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 		self.cpuTemperatureLabel.pack()
 
-		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=190)
-		activeProgramFrame.pack_propagate(False)
+		self.activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=190)
+		self.activeProgramFrame.pack_propagate(False)
 		
-		activeProgramFrame.grid(column=1, row = 0, pady=2,padx=2, sticky="n")
-		tk.Label(activeProgramFrame, text="Actions", fg="white", bg="black").pack()
-
-
-		self.turnOn = tk.Button(activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-		self.turnOn.pack()
-		#self.turnOn.grid(column=0, row = 0)
-		#sep = tk.Separator(activeProgramFrame,orient='horizontal')
-
-		self.turnOff = tk.Button(activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
-		self.turnOff.pack()
-		#self.turnOff.grid(column=0, row = 1)
-
+		self.activeProgramFrame.grid(column=1, row = 0, pady=2,padx=2, sticky="n")
+		tk.Label(self.activeProgramFrame,  text="Actions", fg="white", bg="black").pack(side=TOP, anchor=NW)
 
 		temperatureGraph = tk.Frame(self, bg="black", width=windowWidth*.95,height=270)
 		temperatureGraph.pack_propagate(False)
-		
 		temperatureGraph.grid(column=0, columnspan=2, row = 1, pady=0,padx=0, sticky="n")
 
 		self.canvas_width = windowWidth*.95
@@ -252,6 +241,51 @@ class Application(tk.Frame):
 	
 	def onProgramClick(self, program):
 		print("click program: ", program)
+		
+		for b in self.programbuttons:
+			self.programbuttons[b].destroy()
+
+		#if ("turnOn"  in self.programbuttons):
+		#	self.programbuttons["turnOn"].destroy()
+		#
+		#if ("turnOff" in self.programbuttons):
+		#	self.programbuttons["turnOff"].destroy()
+		
+		program = self.programs[program]
+		if (program["type"] == "manual"):
+			self.programbuttons['turnOn'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			self.programbuttons['turnOn'].pack(side=TOP, anchor=NW)
+			
+			#separator = ttk.Separator(self.activeProgramFrame, orient='horizontal')
+			#separator.pack(side=LEFT, anchor=NW, fill="y", padx=0, pady=10)
+			#self.programbuttons["sepx"] = separator
+
+
+			self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
+			self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
+			
+			btn = tk.Button(self.activeProgramFrame, width=3, height=5, text="-", fg="red",font=("Arial Bold", 30), command=self.buttonClickOn)
+			btn.pack(side=RIGHT)
+			self.programbuttons["minus"] = btn
+			separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
+			separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
+			self.programbuttons["sepa"] = separator
+
+			lbl = tk.Label(self.activeProgramFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
+			lbl.pack(side = RIGHT)
+			lbl.configure(text="65") #//['text'] = 68
+			self.programbuttons["tlabel"] = lbl
+
+			separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
+			separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
+			self.programbuttons["sepb"] = separator
+
+			btn = tk.Button(self.activeProgramFrame, width=3, height=5, text="+", fg="red",font=("Arial Bold", 30), command=self.buttonClickOn)
+			btn.pack(side=RIGHT)
+			self.programbuttons["plus"] = btn
+		
+
+
 	
 	def onUpdate(self):
 		# update displayed time
