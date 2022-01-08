@@ -29,22 +29,77 @@ def current_iso8601():
 	return time.time()
 	# return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 
-class Temperature:
-  def __init__(self, tempThermo, tempInternal):
-    self.tempThermo = tempThermo
-    self.tempInternal = tempInternal
+class Oven:
+	def __init__(self):
+		self.mode = "real"
+		GPIO.setup(4, GPIO.OUT)
+		GPIO.output(4,  0)
+		self.thermocouple = MAX31855(15,14,18)
+		if platform == "darwin":
+			self.mode = "simulated"
+
+		self.temperature = 12.0
+		self.cputemperature = 12.0
+		self.heating = 0
+		self.targettemperature = 2000
+		self.trackTemperature = 0
+
+	def update(self):
+		if self.mode == "real":
+			# get the temperature from the max31855
+			rj = self.thermocouple.get_rj()
+			gottemperature = 0
+			try:
+				tc = self.thermocouple.get()
+				self.temperature = tc
+				gottemperature = 1
+			except MAX31855Error as e:
+				self.temperature = -1
+				#tc = "Error: "+ e.value
+				#running = False
+
+			self.cputemperature = rj
+		else:
+			# simulated oven
+			#print("simul")
+			if self.heating:
+				self.temperature += 0.1
+			else:
+				self.temperature += (12 - self.temperature ) * 0.01
+		
+
+		if (self.trackTemperature):
+			print("tracking",self.targettemperature)
+			if (not self.heating and self.temperature < self.targettemperature-.2):
+			
+				self.heat()
+			
+			elif (self.heating and self.temperature > self.targettemperature + .2):
+				self.cool()
+		
+
+	def heat(self):
+		GPIO.output(4,  1)
+		self.heating = 1
+
+	def cool(self):
+		GPIO.output(4,  0)
+		self.heating = 0
+			
 
 
+		
 
 class Application(tk.Frame):
 	def __init__(self, master=None):
 		tk.Frame.__init__(self, master)
-		self.pack()
-		#GPIO.setmode(GPIO.BOARD)
 		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(4, GPIO.OUT)
-		GPIO.output(4,  0)
-		self.thermocouple = MAX31855(15,14,18)
+		self.pack()
+		self.oven = Oven()
+		self.washeating = 0
+		self.config = {}
+		#GPIO.setmode(GPIO.BOARD)
+		
 		self.setupTemperatureArray()
 		self.loadPrograms()
 		self.createWidgets()
@@ -54,6 +109,17 @@ class Application(tk.Frame):
 		file = open('./programs.json', 'r')
 		self.programs = json.load(file)
 		self.programbuttons = {}
+		self.config["manualtemperature"] = 40
+		try:
+			file = open('./config.json', 'r')
+			self.config =  json.load(file)
+			self.oven.targettemperature = self.config["manualtemperature"] 
+		except:
+			print("No config file. It will be created")
+
+	def saveConfig(self):
+		cfile = open('./config.json', 'w')
+		json.dump(self.config, cfile)
 
 	def setupTemperatureArray(self):
 		self.temparray = []
@@ -158,10 +224,12 @@ class Application(tk.Frame):
 		json.dump(self.temparray, tempfile)
 
 	def buttonClickOn(self):
-		GPIO.output(4,  1)
+		self.oven.heat()
+		
 
 	def buttonClickOff(self):
-		GPIO.output(4,  0)
+		self.oven.cool()
+		#GPIO.output(4,  0)
 
 	def createWidgets(self):
 		"""self.now = tk.StringVar()
@@ -200,7 +268,7 @@ class Application(tk.Frame):
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
 
-		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.95,height=100)
+		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*(.95-.27),height=100)
 		activeProgramFrame.pack_propagate(False)
 		activeProgramFrame.grid(column=0, columnspan=2, row = 2, pady=2,padx=2, sticky="n")
 
@@ -250,47 +318,84 @@ class Application(tk.Frame):
 		#
 		#if ("turnOff" in self.programbuttons):
 		#	self.programbuttons["turnOff"].destroy()
-		
+		self.usetemp = tk.IntVar()
 		program = self.programs[program]
+		framewidth = windowWidth*(.95-.27)
 		if (program["type"] == "manual"):
-			self.programbuttons['turnOn'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-			self.programbuttons['turnOn'].pack(side=TOP, anchor=NW)
-			
-			#separator = ttk.Separator(self.activeProgramFrame, orient='horizontal')
-			#separator.pack(side=LEFT, anchor=NW, fill="y", padx=0, pady=10)
-			#self.programbuttons["sepx"] = separator
 
 
-			self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
-			self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
+			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but.place(x=10, y=30)
+			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+				
+
+			but = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
+			but.place(x=10, y=100)
+			self.programbuttons['turnOff'] = but #pack(side=TOP, anchor=NW)
 			
-			btn = tk.Button(self.activeProgramFrame, width=3, height=5, text="-", fg="red",font=("Arial Bold", 30), command=self.buttonClickOn)
-			btn.pack(side=RIGHT)
+			##self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
+			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
+			
+			c1 = tk.Checkbutton(self.activeProgramFrame, text='Use temperaturecontrol',variable=self.usetemp, onvalue=1, offvalue=0, command=self.checkbox)
+			c1.place(x=framewidth*.6 + 60, y=20)
+			self.programbuttons['check'] = c1
+
+			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="-", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureDown)
+			btn.place(x=framewidth*.6,y=50)
 			self.programbuttons["minus"] = btn
-			separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
-			separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
-			self.programbuttons["sepa"] = separator
+			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
+			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
+			#self.programbuttons["sepa"] = separator
 
-			lbl = tk.Label(self.activeProgramFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
-			lbl.pack(side = RIGHT)
-			lbl.configure(text="65") #//['text'] = 68
+			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
+			lbl.place(x=framewidth*.6 + 100,y=50)
+			
 			self.programbuttons["tlabel"] = lbl
 
-			separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
-			separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
-			self.programbuttons["sepb"] = separator
+			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
+			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
+			#self.programbuttons["sepb"] = separator
 
-			btn = tk.Button(self.activeProgramFrame, width=3, height=5, text="+", fg="red",font=("Arial Bold", 30), command=self.buttonClickOn)
-			btn.pack(side=RIGHT)
+			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="+", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureUp)
+			btn.place(x=framewidth*.6 + 170,y=50)
 			self.programbuttons["plus"] = btn
 		
+	def checkbox(self):
+		print("check", self.usetemp.get())
+		#self.config["manualtemperature"] = 
+		self.oven.trackTemperature = self.usetemp.get()
+		self.saveConfig()
 
+	def changeTemperatureUp(self):
+		lbl = self.programbuttons["tlabel"]
+		self.config["manualtemperature"] = self.config["manualtemperature"] + 5
+		lbl.configure(text=self.config["manualtemperature"])
+		self.oven.targettemperature = self.config["manualtemperature"] 
+		self.saveConfig()
 
+	def changeTemperatureDown(self):
+		lbl = self.programbuttons["tlabel"]
+		self.config["manualtemperature"] = self.config["manualtemperature"] - 5
+		lbl.configure(text=self.config["manualtemperature"])
+		self.oven.targettemperature = self.config["manualtemperature"] 
+		self.saveConfig()
 	
 	def onUpdate(self):
 		# update displayed time
 		# self.now.set(current_iso8601())
-		rj = self.thermocouple.get_rj()
+		
+		self.oven.update()
+		if (self.oven.heating and not self.washeating):
+			self.temperatureLabel.config(bg="red")
+
+		elif (not self.oven.heating and self.washeating): 
+			self.temperatureLabel.config(bg="black")
+		self.washeating = self.oven.heating
+		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
+		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
+		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
+
+		"""rj = self.thermocouple.get_rj()
 		gottemperature = 0
 		try:
 			tc = self.thermocouple.get()
@@ -326,6 +431,8 @@ class Application(tk.Frame):
 
 		# GPIO.output(4,  onoff)
 		# schedule timer to call myself after 1 second
+		
+		"""
 		self.after(250, self.onUpdate)
 
 
