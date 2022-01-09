@@ -99,10 +99,12 @@ class Application(tk.Frame):
 		self.washeating = 0
 		self.config = {}
 		#GPIO.setmode(GPIO.BOARD)
-		
-		self.setupTemperatureArray()
 		self.loadPrograms()
+
+		self.setupTemperatureArray()
+		
 		self.createWidgets()
+		self.onProgramClick("manual")
 		self.onUpdate() #// start updating
 	
 	def loadPrograms(self):
@@ -154,11 +156,29 @@ class Application(tk.Frame):
 		now = datetime.now()
 		hoursprev = 1
 		hoursahead = 1
+		tempmax = 0
+		tempmin = 0
+		
+		# look at graph to adjust tempmax and hours ahead and behind
+		if (self.program["type"]=="graph"):
+			for t in self.program["graph"]:
+				if (t["temperature"] > tempmax):
+					tempmax = t["temperature"]
+				if (t["time"] > hoursahead):
+					hoursahead = t["time"]
+			if self.programRunning:
+				programtime = (nows - self.programstarttime) / 60 / 60
+				if (int(programtime+1) > hoursprev):
+					hoursprev = int(programtime+1)
+		
+		
+			if (int(hoursahead) <= hoursahead):
+				hoursahead = int(hoursahead) + 1
+		#hoursprev = hoursahead
+
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
-		tempmax = 0
-		tempmin = 0
 
 		idx = 0
 		while (len(self.temparray)>0 and self.temparray[0]["time"] < timestart):
@@ -174,9 +194,9 @@ class Application(tk.Frame):
 				continue
 			if (t["tempThermo"] > tempmax):
 				tempmax = t["tempThermo"]
-
-		tempmax+= 10
 		
+		tempmax *= 1.1
+
 		self.temperatureCanvas.create_text(self.canvas_width-20, 20, text=str(int(tempmax)), fill="yellow", font=('Helvetica 13 bold'))
 
 		
@@ -216,6 +236,25 @@ class Application(tk.Frame):
 				prevy = y
 
 			#print(t["time"])
+
+		# draw the projected temperaturecurve
+
+		if (self.program["type"]=="graph"):
+			prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
+			startdisplaytime = nows
+			if self.programRunning:
+				startdisplaytime = self.programstarttime
+			for t in self.program["graph"]:
+				timesec = t["time"] * 60 * 60 + startdisplaytime
+				x = (timesec - timestart ) / 60 * pixelsprminute
+				y = self.canvas_height - t["temperature"] * pixelsprdegree
+				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="green")
+				prevx = x
+				prevy = y
+
+				self.temperatureCanvas.create_line(x,y,x,y+15, fill="white")
+				self.temperatureCanvas.create_text(x, y + 20, text=str(int(t["temperature"])), fill="white", font=('Helvetica 10'))
+				#print("graph time ", timesec)
 		
 	
 	def saveTempArray(self):
@@ -232,12 +271,7 @@ class Application(tk.Frame):
 		#GPIO.output(4,  0)
 
 	def createWidgets(self):
-		"""self.now = tk.StringVar()
-		self.time = tk.Label(self, font=('Helvetica', 24))
-		self.time.pack(side="top")
-		self.time["textvariable"] = self.now
-
-"""
+		
 		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=190)
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
 		temperatureFrame.pack_propagate(False)
@@ -320,6 +354,7 @@ class Application(tk.Frame):
 		#	self.programbuttons["turnOff"].destroy()
 		self.usetemp = tk.IntVar()
 		program = self.programs[program]
+		self.program = program
 		framewidth = windowWidth*(.95-.27)
 		if (program["type"] == "manual"):
 
@@ -359,7 +394,21 @@ class Application(tk.Frame):
 			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="+", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureUp)
 			btn.place(x=framewidth*.6 + 170,y=50)
 			self.programbuttons["plus"] = btn
+			self.oven.trackTemperature = 0
+		elif (program["type"]=="graph"):
+			self.oven.trackTemperature = 0
+
+			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="RUN", fg="red", command=self.buttonClickStart)
+			but.place(x=10, y=30)
+			self.programbuttons['start'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			self.programRunning = 0
+			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="STOP", fg="red", command=self.buttonClickStop)
+			but.place(x=10, y=100)
+			but.place_forget()
+			self.programbuttons['stop'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 		
+		self.drawTemperatureGraph()
+
 	def checkbox(self):
 		print("check", self.usetemp.get())
 		#self.config["manualtemperature"] = 
@@ -379,11 +428,44 @@ class Application(tk.Frame):
 		lbl.configure(text=self.config["manualtemperature"])
 		self.oven.targettemperature = self.config["manualtemperature"] 
 		self.saveConfig()
-	
+
+	def buttonClickStart(self):
+		self.programRunning = 1
+		self.programstarttime = time.time()
+		self.programbuttons['start'].config(state= DISABLED)
+		self.programbuttons['stop'].place(x=10, y=100)
+	def buttonClickStop(self):
+		self.programRunning = 0
+		self.programbuttons['stop'].place_forget()
+		self.programbuttons['start'].config(state= NORMAL)
+
 	def onUpdate(self):
 		# update displayed time
 		# self.now.set(current_iso8601())
 		
+		if (self.program["type"]=="graph"):
+			prevtime = 0
+			prevtemp = self.program["graph"][0]["temperature"]
+			#prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
+			#startdisplaytime = nows
+			if self.programRunning:
+				targettemperature = 0
+				nowtime = time.time() - self.programstarttime
+				for t in self.program["graph"]:
+					timesec = t["time"] * 60 * 60 
+					if (timesec < nowtime): # now has passed the timesec time
+						prevtime = timesec
+						prevtemp = t["temperature"]
+					else:
+						nowfactor = (nowtime - prevtime) / (timesec - prevtime)
+						targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
+						break
+				self.oven.trackTemperature = 1
+				self.oven.targettemperature = targettemperature
+			else:
+				self.oven.trackTemperature = 0
+
+
 		self.oven.update()
 		if (self.oven.heating and not self.washeating):
 			self.temperatureLabel.config(bg="red")
@@ -391,6 +473,7 @@ class Application(tk.Frame):
 		elif (not self.oven.heating and self.washeating): 
 			self.temperatureLabel.config(bg="black")
 		self.washeating = self.oven.heating
+		
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 

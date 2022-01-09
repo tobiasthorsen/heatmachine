@@ -1,20 +1,28 @@
 {
 	"manual": {
-		"type": "manual"
-	},
-
-	"fixeddegrees": {
-		"type": "hold",
+		"type": "manual",
 		"temperature": 35
 	},
 
 	"steadyrise": {
 		"type": "graph",
 		"graph" : [
-			{"time":5, "temperature":30},
-			{"time":10, "temperature":40},
-			{"time":25, "temperature":45}
+			{"time":0.01, "temperature":20},
+			{"time":0.1, "temperature":30},
+			{"time":0.2, "temperature":35},
+			{"time":0.3, "temperature":40},
+			{"time":1, "temperature":25}
+		]
+	},
+
+	"bisque": {
+		"type": "graph",
+		"graph" : [
+			{"time":3, "temperature":200},
+			{"time":5, "temperature":480},
+			{"time":8, "temperature":980},
+			{"time":8.5, "temperature":980}
 		]
 	}
-	
+
 }
