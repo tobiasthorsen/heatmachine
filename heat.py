@@ -220,6 +220,28 @@ class Application(tk.Frame):
 		x = (nows-timestart) / 60 * pixelsprminute
 		self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="white")
 
+		
+		# draw the projected temperaturecurve
+		
+		prevx = -1
+		prevy = 0
+		if (self.program["type"]=="graph"):
+			prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
+			startdisplaytime = nows
+			if self.programRunning:
+				startdisplaytime = self.programstarttime
+			for t in self.program["graph"]:
+				timesec = t["time"] * 60 * 60 + startdisplaytime
+				x = (timesec - timestart ) / 60 * pixelsprminute
+				y = self.canvas_height - t["temperature"] * pixelsprdegree
+				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
+				prevx = x
+				prevy = y
+
+				self.temperatureCanvas.create_line(x,y,x,y+15, fill="white")
+				self.temperatureCanvas.create_text(x, y + 20, text=str(int(t["temperature"])), fill="white", font=('Helvetica 10'))
+				#print("graph time ", timesec)
+		
 		# draw the graphs..		
 		prevx = -1
 		prevy = 0
@@ -237,25 +259,6 @@ class Application(tk.Frame):
 
 			#print(t["time"])
 
-		# draw the projected temperaturecurve
-
-		if (self.program["type"]=="graph"):
-			prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
-			startdisplaytime = nows
-			if self.programRunning:
-				startdisplaytime = self.programstarttime
-			for t in self.program["graph"]:
-				timesec = t["time"] * 60 * 60 + startdisplaytime
-				x = (timesec - timestart ) / 60 * pixelsprminute
-				y = self.canvas_height - t["temperature"] * pixelsprdegree
-				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="green")
-				prevx = x
-				prevy = y
-
-				self.temperatureCanvas.create_line(x,y,x,y+15, fill="white")
-				self.temperatureCanvas.create_text(x, y + 20, text=str(int(t["temperature"])), fill="white", font=('Helvetica 10'))
-				#print("graph time ", timesec)
-		
 	
 	def saveTempArray(self):
 		#print json.dumps(self.temparray)
