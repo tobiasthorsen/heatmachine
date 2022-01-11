@@ -66,7 +66,7 @@ class Oven:
 
 			self.cputemperature = rj
 
-			self.open = GPIO.input(PIN_SWITCH)
+			self.open = GPIO.input(PIN_SWITCH) # input the lid status maybe
 		else:
 			# simulated oven
 			#print("simul")
