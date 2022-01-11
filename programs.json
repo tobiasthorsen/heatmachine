@@ -18,10 +18,9 @@
 	"bisque": {
 		"type": "graph",
 		"graph" : [
-			{"time":3, "temperature":200},
-			{"time":5, "temperature":480},
-			{"time":8, "temperature":980},
-			{"time":8.5, "temperature":980}
+			{"time":1, "temperature":100},
+			{"time":6, "temperature":600},
+			{"time":8, "temperature":980}
 		]
 	}
 

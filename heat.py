@@ -20,7 +20,11 @@ print (platform)
 windowWidth = 100
 windowHeight = 100
 
-
+PIN_OVENCONTROL = 4
+PIN_THERMO_PIN = 15
+PIN_THERMO_CLOCK = 14
+PIN_THERMO_DATA = 18 # cs_pin, clock_pin, data_pin
+PIN_SWITCH = 23
 
 def current_iso8601():
 	"""Get current date and time in ISO8601"""
@@ -32,9 +36,10 @@ def current_iso8601():
 class Oven:
 	def __init__(self):
 		self.mode = "real"
-		GPIO.setup(4, GPIO.OUT)
-		GPIO.output(4,  0)
-		self.thermocouple = MAX31855(15,14,18)
+		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
+		GPIO.output(PIN_OVENCONTROL,  0)
+		GPIO.setup(PIN_OVENCONTROL, GPIO.IN)
+		self.thermocouple = MAX31855(PIN_THERMO_PIN,PIN_THERMO_CLOCK,PIN_THERMO_DATA)
 		if platform == "darwin":
 			self.mode = "simulated"
 
@@ -43,6 +48,7 @@ class Oven:
 		self.heating = 0
 		self.targettemperature = 2000
 		self.trackTemperature = 0
+		self.open = 0
 
 	def update(self):
 		if self.mode == "real":
@@ -59,6 +65,8 @@ class Oven:
 				#running = False
 
 			self.cputemperature = rj
+
+			self.open = GIPO.input(PIN_SWITCH)
 		else:
 			# simulated oven
 			#print("simul")
@@ -79,11 +87,11 @@ class Oven:
 		
 
 	def heat(self):
-		GPIO.output(4,  1)
+		GPIO.output(PIN_OVENCONTROL,  1)
 		self.heating = 1
 
 	def cool(self):
-		GPIO.output(4,  0)
+		GPIO.output(PIN_OVENCONTROL,  0)
 		self.heating = 0
 			
 
@@ -97,6 +105,7 @@ class Application(tk.Frame):
 		self.pack()
 		self.oven = Oven()
 		self.washeating = 0
+		self.wasopen = 0
 		self.config = {}
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
@@ -156,7 +165,7 @@ class Application(tk.Frame):
 		now = datetime.now()
 		hoursprev = 1
 		hoursahead = 1
-		tempmax = 0
+		tempmax = 100
 		tempmin = 0
 		
 		# look at graph to adjust tempmax and hours ahead and behind
@@ -359,6 +368,8 @@ class Application(tk.Frame):
 		program = self.programs[program]
 		self.program = program
 		framewidth = windowWidth*(.95-.27)
+		
+
 		if (program["type"] == "manual"):
 
 
@@ -470,13 +481,28 @@ class Application(tk.Frame):
 
 
 		self.oven.update()
-		if (self.oven.heating and not self.washeating):
-			self.temperatureLabel.config(bg="red")
-
-		elif (not self.oven.heating and self.washeating): 
-			self.temperatureLabel.config(bg="black")
-		self.washeating = self.oven.heating
 		
+		
+		if (self.oven.open and not self.wasopen):
+			self.temperatureLabel.config(bg="blue")
+		elif (not self.oven.open and self.wasopen):
+			self.temperatureLabel.config(bg="black")
+
+		self.wasopen = self.oven.open
+
+		if (not self.oven.open): 
+			
+			
+			if (self.oven.heating and not self.washeating):
+				self.temperatureLabel.config(bg="red")
+
+			elif (not self.oven.heating and self.washeating): 
+				self.temperatureLabel.config(bg="black")
+			
+			self.washeating = self.oven.heating
+
+		
+
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
