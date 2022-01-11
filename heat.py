@@ -38,17 +38,18 @@ class Oven:
 		self.mode = "real"
 		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
 		GPIO.output(PIN_OVENCONTROL,  0)
-		GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		
 		self.thermocouple = MAX31855(PIN_THERMO_PIN,PIN_THERMO_CLOCK,PIN_THERMO_DATA)
 		if platform == "darwin":
 			self.mode = "simulated"
-
+		else:
+			GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 		self.temperature = 12.0
 		self.cputemperature = 12.0
 		self.heating = 0
 		self.targettemperature = 2000
 		self.trackTemperature = 0
-		self.open = 0
+		self.closed = 1
 
 	def update(self):
 		if self.mode == "real":
@@ -66,7 +67,7 @@ class Oven:
 
 			self.cputemperature = rj
 
-			self.open = GPIO.input(PIN_SWITCH) # input the lid status maybe
+			self.closed = GPIO.input(PIN_SWITCH) # input the lid status maybe
 		else:
 			# simulated oven
 			#print("simul")
@@ -105,7 +106,7 @@ class Application(tk.Frame):
 		self.pack()
 		self.oven = Oven()
 		self.washeating = 0
-		self.wasopen = 0
+		self.wasclosed = 0
 		self.config = {}
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
@@ -483,14 +484,14 @@ class Application(tk.Frame):
 		self.oven.update()
 		
 		
-		if (self.oven.open and not self.wasopen):
-			self.temperatureLabel.config(bg="blue")
-		elif (not self.oven.open and self.wasopen):
+		if (self.oven.closed and not self.wasclosed):
 			self.temperatureLabel.config(bg="black")
+		elif (not self.oven.closed and self.wasclosed):
+			self.temperatureLabel.config(bg="blue")
 
-		self.wasopen = self.oven.open
+		self.wasclosed = self.oven.closed
 
-		if (not self.oven.open): 
+		if (not self.oven.closed): 
 			
 			
 			if (self.oven.heating and not self.washeating):
