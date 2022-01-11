@@ -491,7 +491,7 @@ class Application(tk.Frame):
 
 		self.wasclosed = self.oven.closed
 
-		if (not self.oven.closed): 
+		if (self.oven.closed): 
 			
 			
 			if (self.oven.heating and not self.washeating):
