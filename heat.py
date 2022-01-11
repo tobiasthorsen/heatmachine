@@ -38,7 +38,7 @@ class Oven:
 		self.mode = "real"
 		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
 		GPIO.output(PIN_OVENCONTROL,  0)
-		GPIO.setup(PIN_OVENCONTROL, GPIO.IN)
+		GPIO.setup(PIN_SWITCH, GPIO.IN)
 		self.thermocouple = MAX31855(PIN_THERMO_PIN,PIN_THERMO_CLOCK,PIN_THERMO_DATA)
 		if platform == "darwin":
 			self.mode = "simulated"
