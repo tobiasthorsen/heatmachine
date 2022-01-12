@@ -241,7 +241,7 @@ class Application(tk.Frame):
 			if self.programRunning:
 				startdisplaytime = self.programstarttime
 			for t in self.program["graph"]:
-				timesec = t["time"] * 60 * 60 + startdisplaytime
+				timesec = t["targettime"] * 60 * 60 + startdisplaytime
 				x = (timesec - timestart ) / 60 * pixelsprminute
 				y = self.canvas_height - t["temperature"] * pixelsprdegree
 				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
@@ -250,7 +250,13 @@ class Application(tk.Frame):
 
 				self.temperatureCanvas.create_line(x,y,x,y+15, fill="white")
 				self.temperatureCanvas.create_text(x, y + 20, text=str(int(t["temperature"])), fill="white", font=('Helvetica 10'))
-				#print("graph time ", timesec)
+
+				try:
+					if (t["mustreach"]):
+						self.temperatureCanvas.create_oval(x-10,y-10,x+10,y+10)
+
+				except:
+					x = 0 #print("x")
 		
 		# draw the graphs..		
 		prevx = -1
@@ -285,7 +291,7 @@ class Application(tk.Frame):
 
 	def createWidgets(self):
 		
-		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.27, height=190)
+		temperatureFrame = tk.Frame(self, bg="black",width=windowWidth*.37, height=190)
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
 		temperatureFrame.pack_propagate(False)
 		temperatureFrame.grid(column=0, row = 0, pady=2 ,padx=2, sticky="n")
@@ -300,7 +306,7 @@ class Application(tk.Frame):
 		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 		self.cpuTemperatureLabel.pack()
 
-		self.activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.67,height=190)
+		self.activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.57,height=190)
 		self.activeProgramFrame.pack_propagate(False)
 		
 		self.activeProgramFrame.grid(column=1, row = 0, pady=2,padx=2, sticky="n")
@@ -386,19 +392,19 @@ class Application(tk.Frame):
 			##self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
-			c1 = tk.Checkbutton(self.activeProgramFrame, text='Use temperaturecontrol',variable=self.usetemp, onvalue=1, offvalue=0, command=self.checkbox)
-			c1.place(x=framewidth*.6 + 60, y=20)
+			c1 = tk.Checkbutton(self.activeProgramFrame, text='AUTO', width=25, height = 2, variable=self.usetemp, onvalue=1, offvalue=0, command=self.checkbox)
+			c1.place(x=framewidth*.5 + 10, y=30)
 			self.programbuttons['check'] = c1
 
 			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="-", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureDown)
-			btn.place(x=framewidth*.6,y=50)
+			btn.place(x=framewidth*.5,y=90)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepa"] = separator
 
 			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
-			lbl.place(x=framewidth*.6 + 100,y=50)
+			lbl.place(x=framewidth*.5 + 100,y=90)
 			
 			self.programbuttons["tlabel"] = lbl
 
@@ -407,7 +413,7 @@ class Application(tk.Frame):
 			#self.programbuttons["sepb"] = separator
 
 			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="+", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureUp)
-			btn.place(x=framewidth*.6 + 170,y=50)
+			btn.place(x=framewidth*.5 + 170,y=90)
 			self.programbuttons["plus"] = btn
 			self.oven.trackTemperature = 0
 		elif (program["type"]=="graph"):
@@ -421,7 +427,37 @@ class Application(tk.Frame):
 			but.place(x=10, y=100)
 			but.place_forget()
 			self.programbuttons['stop'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-		
+			
+			try:
+				tmp = self.program["initialized"]
+			except Exception as e:
+				#self.program["initialized"]
+				print("Initialize program", self.program)
+				for p in self.program["graph"]:
+
+					p["targettime"] = p["time"]
+					mustreach = 0
+					try:
+						mustreach = p["mustreach"]
+						print("mustrie")
+					except Exception as e:
+						mustreach = 0
+						p["mustreach"] = 0
+						
+					print("init", p)
+				self.program["initialized"] = 1
+
+			prevtemp = self.oven.temperature
+
+			for p in self.program["graph"]:
+				p["targettime"] = p["time"]
+				if p["temperature"]>prevtemp:
+					p["rise"] = 1
+				else:
+					p["rise"] = 0
+				prevtemp = p["temperature"]
+				p["encountered"] = 0
+
 		self.drawTemperatureGraph()
 
 	def checkbox(self):
@@ -449,6 +485,10 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.programbuttons['start'].config(state= DISABLED)
 		self.programbuttons['stop'].place(x=10, y=100)
+		
+
+		
+
 	def buttonClickStop(self):
 		self.programRunning = 0
 		self.programbuttons['stop'].place_forget()
@@ -467,11 +507,38 @@ class Application(tk.Frame):
 				targettemperature = 0
 				nowtime = time.time() - self.programstarttime
 				for t in self.program["graph"]:
-					timesec = t["time"] * 60 * 60 
+					timesec = t["targettime"] * 60 * 60 
 					if (timesec < nowtime): # now has passed the timesec time
 						prevtime = timesec
 						prevtemp = t["temperature"]
+						if t["encountered"] == 0:
+							print("encountered ", t)
+							# we encountered this point just now. Are we allowed>
+							offsettime = 0
+							if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
+								print("mustreach ", t["mustreach"])
+								if t["rise"] and self.oven.temperature<t["temperature"]:
+									offsettime = 1
+								elif not t["rise"] and self.oven.temperature>t["temperature"]:
+									offsettime = 1
+
+							if offsettime:
+								print("do offset!")
+								foundme = 0
+								for off in self.program["graph"]:
+
+									if (off == t):
+										foundme = 1
+									
+									if (foundme):
+										print("set ", off["targettime"])
+										off["targettime"] = float(off["targettime"]) + 1.0/240
+										print("after ", off["targettime"])
+							else:
+								t["encountered"]=1
+
 					else:
+
 						nowfactor = (nowtime - prevtime) / (timesec - prevtime)
 						targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
 						break
@@ -550,8 +617,9 @@ class Application(tk.Frame):
 
 
 root = tk.Tk()
-root.geometry('400x300')
-root.attributes('-fullscreen', True)
+root.geometry('1024x700')
+if not platform == "darwin":
+	root.attributes('-fullscreen', True)
 root.update()
 #root.resizable(height = None, width = None)
 windowWidth = root.winfo_width()

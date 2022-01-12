@@ -7,11 +7,11 @@
 	"steadyrise": {
 		"type": "graph",
 		"graph" : [
-			{"time":0.01, "temperature":20},
-			{"time":0.1, "temperature":30},
+			{"time":0.001, "temperature":30 , "mustreach": 1},
+			{"time":0.003, "temperature":40, "mustreach": 1},
 			{"time":0.2, "temperature":35},
 			{"time":0.3, "temperature":40},
-			{"time":1, "temperature":25}
+			{"time":0.35, "temperature":25}
 		]
 	},
 
@@ -20,7 +20,15 @@
 		"graph" : [
 			{"time":1, "temperature":100},
 			{"time":6, "temperature":600},
-			{"time":8, "temperature":980}
+			{"time":7, "temperature":980, "mustreach" : 1}
+		]
+	},
+	"glaze": {
+		"type": "graph",
+		"graph" : [
+			{"time":1, "temperature":100},
+			{"time":3, "temperature":300},
+			{"time":4, "temperature":1080, "mustreach" : 1}
 		]
 	}
 
