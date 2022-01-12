@@ -447,8 +447,8 @@ class Application(tk.Frame):
 					print("init", p)
 				self.program["initialized"] = 1
 
-			prevtemp = self.oven.temperature
-
+			#prevtemp = self.oven.temperature
+			prevtemp = 0
 			for p in self.program["graph"]:
 				p["targettime"] = p["time"]
 				if p["temperature"]>prevtemp:
