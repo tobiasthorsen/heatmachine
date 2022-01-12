@@ -166,7 +166,7 @@ class Application(tk.Frame):
 		now = datetime.now()
 		hoursprev = 1
 		hoursahead = 1
-		tempmax = 100
+		tempmax = 50
 		tempmin = 0
 		
 		# look at graph to adjust tempmax and hours ahead and behind
