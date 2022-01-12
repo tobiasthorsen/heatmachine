@@ -182,7 +182,7 @@ class Application(tk.Frame):
 					hoursprev = int(programtime+1)
 		
 		
-			if (int(hoursahead) <= hoursahead):
+			if (int(hoursahead) < hoursahead):
 				hoursahead = int(hoursahead) + 1
 		#hoursprev = hoursahead
 
