@@ -409,14 +409,14 @@ class Application(tk.Frame):
 
 			# plus button
 			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", font=("Arial Bold", 25), command=self.changeTemperatureDown)
-			btn.place(x=framewidth*.40,y=90)
+			btn.place(x=framewidth*.40,y=100)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepa"] = separator
 
-			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
-			lbl.place(x=framewidth*.45 + 100,y=90)
+			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 30))
+			lbl.place(x=framewidth*.45 + 100,y=100)
 			
 			self.programbuttons["tlabel"] = lbl
 
@@ -424,8 +424,8 @@ class Application(tk.Frame):
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepb"] = separator
 
-			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="+", font=("Arial Bold", 30), command=self.changeTemperatureUp)
-			btn.place(x=framewidth*.45 + 170,y=90)
+			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="+", font=("Arial Bold", 25), command=self.changeTemperatureUp)
+			btn.place(x=framewidth*.45 + 170,y=100)
 			self.programbuttons["plus"] = btn
 			self.oven.trackTemperature = 0
 		elif (program["type"]=="graph"):
