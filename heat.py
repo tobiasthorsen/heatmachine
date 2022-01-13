@@ -403,7 +403,7 @@ class Application(tk.Frame):
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
 			# auto button
-			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", activebackground = "#999999" height = 1, command=self.checkbox, font=("Arial Bold", 30))
+			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", activebackground = "#999999", height = 1, command=self.checkbox, font=("Arial Bold", 30))
 			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
