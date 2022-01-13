@@ -403,19 +403,19 @@ class Application(tk.Frame):
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
 			# auto button
-			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", height = 1, command=self.checkbox, font=("Arial Bold", 40))
+			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", height = 1, command=self.checkbox, font=("Arial Bold", 30))
 			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
 			# plus button
-			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", font=("Arial Bold", 30), command=self.changeTemperatureDown)
+			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", font=("Arial Bold", 25), command=self.changeTemperatureDown)
 			btn.place(x=framewidth*.40,y=90)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepa"] = separator
 
-			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
+			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 			lbl.place(x=framewidth*.45 + 100,y=90)
 			
 			self.programbuttons["tlabel"] = lbl
