@@ -403,7 +403,7 @@ class Application(tk.Frame):
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
 			# auto button
-			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", height = 1, command=self.checkbox, font=("Arial Bold", 30))
+			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", activebackground = "#999999" height = 1, command=self.checkbox, font=("Arial Bold", 30))
 			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
@@ -483,10 +483,10 @@ class Application(tk.Frame):
 		print("check", self.usetemp.get())
 		if (self.usetemp.get()):
 			print("setit")
-			self.programbuttons['check'].configure(bg = "red")
+			self.programbuttons['check'].configure(bg = "red", activebackground= "#ff3333")
 		else:
 			print("cleat")
-			self.programbuttons['check'].configure(bg = "#888888")
+			self.programbuttons['check'].configure(bg = "#888888",  activebackground= "#999999")
 
 		#self.config["manualtemperature"] = 
 		self.oven.trackTemperature = self.usetemp.get()
