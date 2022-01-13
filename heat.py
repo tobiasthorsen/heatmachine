@@ -12,6 +12,7 @@ import math
 #from tkinter.ttk import Separator, Style
 from tkinter import ttk
 from tkinter import *
+from tkinter.ttk import *
 from sys import platform
 from max31855 import MAX31855, MAX31855Error
 from datetime import datetime
@@ -381,8 +382,15 @@ class Application(tk.Frame):
 
 		if (program["type"] == "manual"):
 
+			style = Style()
+ 
+			style.configure('TButton', font =
+            				   ('calibri', 20, 'bold'),
+                    			borderwidth = '4',
+                    			foreground = "white",
+                    			background = "red")
 
-			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame,  width=25, height=3, text="ON", command=self.buttonClickOn)
 			but.place(x=10, y=30)
 			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 				
@@ -394,11 +402,12 @@ class Application(tk.Frame):
 			##self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
-			c1 = tk.Checkbutton(self.activeProgramFrame, text='AUTO', width=8, height = 1, variable=self.usetemp, onvalue=1, offvalue=0, command=self.checkbox, font=("Arial Bold", 40))
+			
+			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="gray", height = 1, command=self.checkbox, font=("Arial Bold", 40))
 			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
-			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureDown)
+			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", bg="red", fg="yellow" ,font=("Arial Bold", 30), command=self.changeTemperatureDown)
 			btn.place(x=framewidth*.40,y=90)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
@@ -463,7 +472,21 @@ class Application(tk.Frame):
 		self.drawTemperatureGraph()
 
 	def checkbox(self):
+		if (self.usetemp.get() == 0):
+			self.usetemp.set(1)
+			
+		else:
+			self.usetemp.set(0)
+			
+		
 		print("check", self.usetemp.get())
+		if (self.usetemp.get()):
+			print("setit")
+			self.programbuttons['check'].configure(bg = "red")
+		else:
+			print("cleat")
+			self.programbuttons['check'].configure(bg = "gray")
+
 		#self.config["manualtemperature"] = 
 		self.oven.trackTemperature = self.usetemp.get()
 		self.saveConfig()
