@@ -86,8 +86,8 @@ class Oven:
 			
 			elif (self.heating and self.temperature > self.targettemperature + .2):
 				self.cool()
-		elif (self.heating):
-			self.cool()
+		#elif (self.heating):
+		#	self.cool()
 		
 
 	def heat(self):
@@ -485,8 +485,9 @@ class Application(tk.Frame):
 			print("setit")
 			self.programbuttons['check'].configure(bg = "red", activebackground= "#ff3333")
 		else:
-			print("cleat")
+			print("clear")
 			self.programbuttons['check'].configure(bg = "#888888",  activebackground= "#999999")
+			self.oven.cool()
 
 		#self.config["manualtemperature"] = 
 		self.oven.trackTemperature = self.usetemp.get()
