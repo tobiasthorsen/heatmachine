@@ -484,10 +484,14 @@ class Application(tk.Frame):
 		if (self.usetemp.get()):
 			print("setit")
 			self.programbuttons['check'].configure(bg = "red", activebackground= "#ff3333")
+			self.programbuttons['turnOn'].configure(state = DISABLED)
+			self.programbuttons['turnOff'].configure(state = DISABLED)
 		else:
 			print("clear")
 			self.programbuttons['check'].configure(bg = "#888888",  activebackground= "#999999")
 			self.oven.cool()
+			self.programbuttons['turnOn'].configure(state = NORMAL)
+			self.programbuttons['turnOff'].configure(state = NORMAL)
 
 		#self.config["manualtemperature"] = 
 		self.oven.trackTemperature = self.usetemp.get()
