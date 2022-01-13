@@ -395,19 +395,20 @@ class Application(tk.Frame):
 			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 				
 
-			but = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
+			but = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", command=self.buttonClickOff)
 			but.place(x=10, y=100)
 			self.programbuttons['turnOff'] = but #pack(side=TOP, anchor=NW)
 			
 			##self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
-			
-			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="gray", height = 1, command=self.checkbox, font=("Arial Bold", 40))
+			# auto button
+			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", height = 1, command=self.checkbox, font=("Arial Bold", 40))
 			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
-			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", bg="red", fg="yellow" ,font=("Arial Bold", 30), command=self.changeTemperatureDown)
+			# plus button
+			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", font=("Arial Bold", 30), command=self.changeTemperatureDown)
 			btn.place(x=framewidth*.40,y=90)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
@@ -423,7 +424,7 @@ class Application(tk.Frame):
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepb"] = separator
 
-			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="+", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureUp)
+			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="+", font=("Arial Bold", 30), command=self.changeTemperatureUp)
 			btn.place(x=framewidth*.45 + 170,y=90)
 			self.programbuttons["plus"] = btn
 			self.oven.trackTemperature = 0
@@ -485,7 +486,7 @@ class Application(tk.Frame):
 			self.programbuttons['check'].configure(bg = "red")
 		else:
 			print("cleat")
-			self.programbuttons['check'].configure(bg = "gray")
+			self.programbuttons['check'].configure(bg = "#888888")
 
 		#self.config["manualtemperature"] = 
 		self.oven.trackTemperature = self.usetemp.get()
