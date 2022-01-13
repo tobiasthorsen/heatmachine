@@ -393,18 +393,18 @@ class Application(tk.Frame):
 			#self.programbuttons['turnOff'].pack(side=TOP, anchor=NW)
 			
 			c1 = tk.Checkbutton(self.activeProgramFrame, text='AUTO', width=25, height = 2, variable=self.usetemp, onvalue=1, offvalue=0, command=self.checkbox)
-			c1.place(x=framewidth*.5 + 10, y=30)
+			c1.place(x=framewidth*.45 + 10, y=30)
 			self.programbuttons['check'] = c1
 
 			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="-", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureDown)
-			btn.place(x=framewidth*.5,y=90)
+			btn.place(x=framewidth*.40,y=90)
 			self.programbuttons["minus"] = btn
 			#separator = ttk.Separator(self.activeProgramFrame, orient='vertical')
 			#separator.pack(side=RIGHT, fill="y", padx=10, pady=0)
 			#self.programbuttons["sepa"] = separator
 
 			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 40))
-			lbl.place(x=framewidth*.5 + 100,y=90)
+			lbl.place(x=framewidth*.45 + 100,y=90)
 			
 			self.programbuttons["tlabel"] = lbl
 
@@ -413,7 +413,7 @@ class Application(tk.Frame):
 			#self.programbuttons["sepb"] = separator
 
 			btn = tk.Button(self.activeProgramFrame, width=3, height=1, text="+", fg="red",font=("Arial Bold", 30), command=self.changeTemperatureUp)
-			btn.place(x=framewidth*.5 + 170,y=90)
+			btn.place(x=framewidth*.45 + 170,y=90)
 			self.programbuttons["plus"] = btn
 			self.oven.trackTemperature = 0
 		elif (program["type"]=="graph"):
