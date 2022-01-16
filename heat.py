@@ -5,6 +5,7 @@
 
 import tkinter as tk
 import time
+
 import sys
 import RPi.GPIO as GPIO
 import json
@@ -16,6 +17,7 @@ from tkinter.ttk import *
 from sys import platform
 from max31855 import MAX31855, MAX31855Error
 from datetime import datetime
+#import datetime
 from functools import partial
 print (platform)
 windowWidth = 100
@@ -73,9 +75,9 @@ class Oven:
 			# simulated oven
 			#print("simul")
 			if self.heating:
-				self.temperature += 0.1
+				self.temperature += 0.15
 			else:
-				self.temperature += (12 - self.temperature ) * 0.01
+				self.temperature += (12 - self.temperature ) * 0.002
 		
 
 		if (self.trackTemperature):
@@ -366,6 +368,8 @@ class Application(tk.Frame):
 	def onProgramClick(self, program):
 		print("click program: ", program)
 		
+		#self.buttonClickStop()
+
 		for x in self.programs:
 			if x == program:
 				self.programs[x]["button"].configure(background = "green")	
@@ -460,15 +464,18 @@ class Application(tk.Frame):
 			lbl = tk.Label(self.activeProgramFrame, text="Max temp: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 			lbl.place(x=225,y=30)
 			self.programbuttons['l1'] = lbl
-			txt = "Runtime " + str(maxhours) + " hours"
+			txt = "Duration " + str(maxhours) + " hours"
 			if (flex):
 				txt = txt + " (flex)"
-			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
+			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 16))
 			lbl.place(x=225,y=70)
 			self.programbuttons['l2'] = lbl
+			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 16))
+			lbl.place(x=225,y=92)
+			self.programbuttons['runtime'] = lbl
 			
-			lbl = tk.Label(self.activeProgramFrame, text="Target: ", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
-			lbl.place(x=225,y=120)
+			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
+			lbl.place(x=225,y=130)
 			self.programbuttons['targ'] = lbl
 
 			
@@ -557,6 +564,8 @@ class Application(tk.Frame):
 		self.programbuttons['stop'].place_forget()
 		self.programbuttons['start'].config(state= NORMAL)
 		self.oven.cool()
+		self.programbuttons['targ'].configure(text = "")
+		self.programbuttons['runtime'].configure(text = "")
 
 	def onUpdate(self):
 		# update displayed time
@@ -608,6 +617,12 @@ class Application(tk.Frame):
 						break
 				self.oven.trackTemperature = 1
 				self.oven.targettemperature = targettemperature
+				self.programbuttons['targ'].configure(text = "Target: " + '{0:.1f}'.format(targettemperature))
+				h = int(nowtime/60/60)
+				m = int((nowtime -  (h * 60 * 60))/60)
+				s = int(nowtime - (h * 60 * 60 + m * 60))
+
+				self.programbuttons['runtime'].configure(text = str(h) + ":" + str(m) + ":" + str(s))
 			else:
 				self.oven.trackTemperature = 0
 
