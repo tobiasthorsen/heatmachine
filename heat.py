@@ -368,7 +368,7 @@ class Application(tk.Frame):
 		
 		for x in self.programs:
 			if x == program:
-				self.programs[x]["button"].configure(background = "green")	
+				self.programs[x]["button"].configure(background = "white")	
 			else:
 				self.programs[x]["button"].configure(background = "gray")
 
@@ -458,14 +458,18 @@ class Application(tk.Frame):
 				
 
 			lbl = tk.Label(self.activeProgramFrame, text="Max temp: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
-			lbl.place(x=220,y=30)
+			lbl.place(x=225,y=30)
 			self.programbuttons['l1'] = lbl
 			txt = "Runtime " + str(maxhours) + " hours"
 			if (flex):
 				txt = txt + " (flex)"
 			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
-			lbl.place(x=220,y=90)
+			lbl.place(x=225,y=70)
 			self.programbuttons['l2'] = lbl
+			
+			lbl = tk.Label(self.activeProgramFrame, text="Target: ", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
+			lbl.place(x=225,y=120)
+			self.programbuttons['targ'] = lbl
 
 			
 			try:
