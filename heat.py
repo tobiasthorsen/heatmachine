@@ -457,14 +457,14 @@ class Application(tk.Frame):
 				
 				
 
-			lbl = tk.Label(self.activeProgramFrame, text="Maximum temperature: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
-			lbl.place(x=200,y=30)
+			lbl = tk.Label(self.activeProgramFrame, text="Max temp: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
+			lbl.place(x=220,y=30)
 			self.programbuttons['l1'] = lbl
 			txt = "Runtime " + str(maxhours) + " hours"
 			if (flex):
 				txt = txt + " (flex)"
 			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
-			lbl.place(x=200,y=60)
+			lbl.place(x=220,y=90)
 			self.programbuttons['l2'] = lbl
 
 			
