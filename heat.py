@@ -368,9 +368,9 @@ class Application(tk.Frame):
 		
 		for x in self.programs:
 			if x == program:
-				self.programs[x]["button"].configure(foreground = "green")	
+				self.programs[x]["button"].configure(background = "green")	
 			else:
-				self.programs[x]["button"].configure(foreground = "gray")
+				self.programs[x]["button"].configure(background = "gray")
 
 		#delete contents of activeprogramframe
 		for b in self.programbuttons:
