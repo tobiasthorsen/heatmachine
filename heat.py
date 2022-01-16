@@ -324,17 +324,17 @@ class Application(tk.Frame):
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
 
-		activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*(.95-.27),height=100)
-		activeProgramFrame.pack_propagate(False)
-		activeProgramFrame.grid(column=0, columnspan=2, row = 2, pady=2,padx=2, sticky="n")
+		programSelectFrame = tk.Frame(self, bg="black", width=windowWidth*(.95),height=100)
+		programSelectFrame.pack_propagate(False)
+		programSelectFrame.grid(column=0, columnspan=2, row = 2, pady=2,padx=2, sticky="n")
 
-		separator = ttk.Separator(activeProgramFrame, orient='vertical')
+		separator = ttk.Separator(programSelectFrame, orient='vertical')
 		separator.pack(side=LEFT, fill="y", padx=10, pady=0)
 
 		for x in self.programs:
-			btn = tk.Button(activeProgramFrame, text=x, fg="red", width=12, height = 3, command=partial(self.onProgramClick, x))
+			btn = tk.Button(programSelectFrame, text=x, fg="red", width=12, height = 3, command=partial(self.onProgramClick, x))
 			btn.pack(side=LEFT)
-			separator = ttk.Separator(activeProgramFrame, orient='vertical')
+			separator = ttk.Separator(programSelectFrame, orient='vertical' )
 			separator.pack(side=LEFT, fill="y", padx=10, pady=0)
 			self.programs[x]["button"] = btn
 			print(x)
@@ -366,20 +366,21 @@ class Application(tk.Frame):
 	def onProgramClick(self, program):
 		print("click program: ", program)
 		
+		for x in self.programs:
+			if x == program:
+				self.programs[x]["button"].configure(foreground = "green")	
+			else:
+				self.programs[x]["button"].configure(foreground = "gray")
+
+		#delete contents of activeprogramframe
 		for b in self.programbuttons:
 			self.programbuttons[b].destroy()
 
-		#if ("turnOn"  in self.programbuttons):
-		#	self.programbuttons["turnOn"].destroy()
-		#
-		#if ("turnOff" in self.programbuttons):
-		#	self.programbuttons["turnOff"].destroy()
 		self.usetemp = tk.IntVar()
 		program = self.programs[program]
 		self.program = program
 		framewidth = windowWidth*(.95-.27)
 		
-
 		if (program["type"] == "manual"):
 
 			style = Style()
@@ -431,14 +432,41 @@ class Application(tk.Frame):
 		elif (program["type"]=="graph"):
 			self.oven.trackTemperature = 0
 
-			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="RUN", fg="red", command=self.buttonClickStart)
+			but =  tk.Button(self.activeProgramFrame, width=20, height=3, text="RUN", fg="red", command=self.buttonClickStart)
 			but.place(x=10, y=30)
 			self.programbuttons['start'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 			self.programRunning = 0
-			but =  tk.Button(self.activeProgramFrame, width=25, height=3, text="STOP", fg="red", command=self.buttonClickStop)
+			but =  tk.Button(self.activeProgramFrame, width=20, height=3, text="STOP", fg="red", command=self.buttonClickStop)
 			but.place(x=10, y=100)
 			but.place_forget()
 			self.programbuttons['stop'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+
+			## max temperature
+			maxtemp = 0
+			maxhours = 0
+			flex = 0
+			for g in self.program["graph"]:
+				if (g["temperature"] > maxtemp):
+					maxtemp = g["temperature"]
+				maxhours = g["time"]
+				try:
+					if (g["mustreach"]):
+						flex = 1
+				except Exception as e:
+					print ("nothing")
+				
+				
+
+			lbl = tk.Label(self.activeProgramFrame, text="Maximum temperature: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
+			lbl.place(x=200,y=30)
+			self.programbuttons['l1'] = lbl
+			txt = "Runtime " + str(maxhours) + " hours"
+			if (flex):
+				txt = txt + " (flex)"
+			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 20))
+			lbl.place(x=200,y=60)
+			self.programbuttons['l2'] = lbl
+
 			
 			try:
 				tmp = self.program["initialized"]
@@ -524,6 +552,7 @@ class Application(tk.Frame):
 		self.programRunning = 0
 		self.programbuttons['stop'].place_forget()
 		self.programbuttons['start'].config(state= NORMAL)
+		self.oven.cool()
 
 	def onUpdate(self):
 		# update displayed time
