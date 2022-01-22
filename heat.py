@@ -68,7 +68,7 @@ class Oven:
 				gottemperature = 1
 				self.thermocoupleOK = 1
 			except MAX31855Error as e:
-				self.temperature = -1
+				#self.temperature = -1
 				self.thermocoupleOK = 0
 				#tc = "Error: "+ e.value
 				#running = False
@@ -677,6 +677,7 @@ class Application(tk.Frame):
 		if (not self.oven.thermocoupleOK):
 			if (self.showWarningTick == 0):
 				self.ovenWarning.pack()
+				self.temperatureLabel.config(fg="blue")
 
 			self.showWarningTick = 3
 
@@ -684,6 +685,7 @@ class Application(tk.Frame):
 			self.showWarningTick = self.showWarningTick - 1
 			if (self.showWarningTick == 0):
 				self.ovenWarning.pack_forget()
+				self.temperatureLabel.config(fg="white")
 
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
