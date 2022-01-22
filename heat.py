@@ -17,6 +17,9 @@ from tkinter.ttk import *
 from sys import platform
 from max31855 import MAX31855, MAX31855Error
 from datetime import datetime
+import random
+
+
 #import datetime
 from functools import partial
 print (platform)
@@ -53,7 +56,7 @@ class Oven:
 		self.targettemperature = 2000
 		self.trackTemperature = 0
 		self.closed = 1
-
+		self.thermocoupleOK = 1
 	def update(self):
 		if self.mode == "real":
 			# get the temperature from the max31855
@@ -63,8 +66,10 @@ class Oven:
 				tc = self.thermocouple.get()
 				self.temperature = tc
 				gottemperature = 1
+				self.thermocoupleOK = 1
 			except MAX31855Error as e:
 				self.temperature = -1
+				self.thermocoupleOK = 0
 				#tc = "Error: "+ e.value
 				#running = False
 
@@ -78,7 +83,12 @@ class Oven:
 				self.temperature += 0.15
 			else:
 				self.temperature += (12 - self.temperature ) * 0.002
-		
+			
+			if (random.randint(0,20) == 0):
+				self.thermocoupleOK = 0
+			else:
+				self.thermocoupleOK = 1
+
 
 		if (self.trackTemperature):
 			print("tracking",self.targettemperature)
@@ -113,6 +123,8 @@ class Application(tk.Frame):
 		self.washeating = 0
 		self.wasclosed = 0
 		self.config = {}
+		self.wasthermocoupleOK = 1
+		self.showWarningTick = 0
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
 
@@ -300,13 +312,18 @@ class Application(tk.Frame):
 		#left.pack(fill="both", expand=True) # pack_propagate(False)
 		temperatureFrame.pack_propagate(False)
 		temperatureFrame.grid(column=0, row = 0, pady=2 ,padx=2, sticky="n")
-		tk.Label(temperatureFrame, text="Kiln", fg="white", bg="black", anchor="center", justify="center").pack()
-		
+		self.temperatureHeadline = tk.Label(temperatureFrame, text="Kiln", fg="white", bg="black", anchor="center", justify="center")
+		self.temperatureHeadline.pack()
 		
 		self.temperatureLabel = tk.Label(temperatureFrame, text="69", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 65))
 		self.temperatureLabel.pack()
 		self.temperatureLabel.configure(text="65") #//['text'] = 68
 		
+		
+		self.ovenWarning = tk.Label(temperatureFrame, text="Warning - Thermocouple error", fg="white", bg="black", anchor="center", justify="center")
+		self.ovenWarning.pack()
+		self.ovenWarning.pack_forget()
+
 		tk.Label(temperatureFrame, text="Cpu", fg="white", bg="black", anchor="center", justify="center").pack()
 		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 		self.cpuTemperatureLabel.pack()
@@ -648,7 +665,25 @@ class Application(tk.Frame):
 			
 			self.washeating = self.oven.heating
 
-		
+		#if (self.oven.thermocoupleOK and not  self.wasthermocoupleOK):
+		#	self.ovenWarning.pack_forget()
+		#	self.wasthermocoupleOK = 1
+		#	print("NOT OK")
+		#elif (not self.oven.thermocoupleOK and self.wasthermocoupleOK):
+		#	self.ovenWarning.pack()
+		#	self.wasthermocoupleOK = 0
+		#	print("OK")
+
+		if (not self.oven.thermocoupleOK):
+			if (self.showWarningTick == 0):
+				self.ovenWarning.pack()
+
+			self.showWarningTick = 3
+
+		if (self.showWarningTick > 0):
+			self.showWarningTick = self.showWarningTick - 1
+			if (self.showWarningTick == 0):
+				self.ovenWarning.pack_forget()
 
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
