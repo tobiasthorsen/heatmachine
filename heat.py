@@ -438,12 +438,12 @@ class Application(tk.Frame):
                     			foreground = "white",
                     			background = "red")
 
-			but =  tk.Button(self.activeProgramFrame,  width=25, height=3, text="ON", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame,  width=15, height=2, text="ON", command=self.buttonClickOn, font=("Arial Bold", 25))
 			but.place(x=10, y=30)
 			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 				
 
-			but = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", command=self.buttonClickOff)
+			but = tk.Button(self.activeProgramFrame, width=15, height=2, text="OFF", command=self.buttonClickOff, font=("Arial Bold", 25))
 			but.place(x=10, y=100)
 			self.programbuttons['turnOff'] = but #pack(side=TOP, anchor=NW)
 			
@@ -464,7 +464,7 @@ class Application(tk.Frame):
 			#self.programbuttons["sepa"] = separator
 
 			lbl = tk.Label(self.activeProgramFrame, text=self.config["manualtemperature"], fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 30))
-			lbl.place(x=framewidth*.45 + 100,y=100)
+			lbl.place(x=framewidth*.45 + 60,y=100)
 			
 			self.programbuttons["tlabel"] = lbl
 
