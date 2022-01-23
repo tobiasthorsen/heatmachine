@@ -214,9 +214,10 @@ class Application(tk.Frame):
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
-
+		discardtime = 48
+		discardtime = nows - discardtime * 60 * 60
 		idx = 0
-		while (len(self.temparray)>0 and self.temparray[0]["time"] < timestart):
+		while (len(self.temparray)>0 and self.temparray[0]["time"] < discardtime):
 			self.temparray.pop(0)
 			#print ("can delete", idx)
 			idx += 1 
