@@ -127,6 +127,7 @@ class Application(tk.Frame):
 		self.showWarningTick = 0
 		self.heataccum = 0
 		self.programstarttime = time.time()
+		self.mustreahtemperature = 0
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
 
@@ -662,6 +663,7 @@ class Application(tk.Frame):
 							if offsettime:
 								print("do offset!")
 								foundme = 0
+								self.mustreahtemperature = t["temperature"]
 								for off in self.program["graph"]:
 
 									if (off == t):
@@ -673,12 +675,15 @@ class Application(tk.Frame):
 										print("after ", off["targettime"])
 							else:
 								t["encountered"]=1
+								self.mustreahtemperature = 0
 
 					else:
 
 						nowfactor = (nowtime - prevtime) / (timesec - prevtime)
 						targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
 						break
+				if (self.mustreahtemperature):
+					targettemperature = self.mustreahtemperature
 				self.oven.trackTemperature = 1
 				self.oven.targettemperature = targettemperature
 				self.programbuttons['targ'].configure(text = "Target: " + '{0:.1f}'.format(targettemperature))
