@@ -512,6 +512,16 @@ class Application(tk.Frame):
 			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 16))
 			lbl.place(x=225,y=92)
 			self.programbuttons['runtime'] = lbl
+
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<", fg="black", command=self.buttonClickTimeBack)
+			but.place(x=300, y=92)
+			but.place_forget()
+			self.programbuttons['back'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">", fg="black", command=self.buttonClickTimeForward)
+			but.place(x=350, y=92)
+			but.place_forget()
+			self.programbuttons['forward'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+
 			
 			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
 			lbl.place(x=225,y=130)
@@ -549,6 +559,17 @@ class Application(tk.Frame):
 				p["encountered"] = 0
 
 		self.drawTemperatureGraph()
+
+	def buttonClickTimeForward(self):
+		self.programstarttime -= 60
+		self.drawTemperatureGraph()
+
+	def buttonClickTimeBack(self):
+		self.programstarttime += 60
+		if (self.programstarttime > time.time()):
+			self.programstarttime = time.time()
+		self.drawTemperatureGraph()
+		
 
 	def checkbox(self):
 		if (self.usetemp.get() == 0):
@@ -594,6 +615,8 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.programbuttons['start'].config(state= DISABLED)
 		self.programbuttons['stop'].place(x=10, y=100)
+		self.programbuttons['forward'].place(x=400, y=92)
+		self.programbuttons['back'].place(x=350, y=92)
 		
 
 		
