@@ -91,7 +91,7 @@ class Oven:
 
 
 		if (self.trackTemperature):
-			print("tracking",self.targettemperature)
+			#print("tracking",self.targettemperature)
 			if (not self.heating and self.temperature < self.targettemperature-.2):
 			
 				self.heat()
@@ -126,6 +126,7 @@ class Application(tk.Frame):
 		self.wasthermocoupleOK = 1
 		self.showWarningTick = 0
 		self.heataccum = 0
+		self.programstarttime = time.time()
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
 
@@ -193,19 +194,20 @@ class Application(tk.Frame):
 		
 		# look at graph to adjust tempmax and hours ahead and behind
 		if (self.program["type"]=="graph"):
+			programtime = (nows - self.programstarttime) / 60 / 60
 			for t in self.program["graph"]:
 				if (t["temperature"] > tempmax):
 					tempmax = t["temperature"]
-				if (t["time"] > hoursahead):
+				if (t["time"]-programtime   > hoursahead):
 					hoursahead = t["time"]
 			if self.programRunning:
-				programtime = (nows - self.programstarttime) / 60 / 60
-				if (int(programtime+1) > hoursprev):
-					hoursprev = int(programtime+1)
+				
+				if (int(programtime) > hoursprev):
+					hoursprev = int(programtime)
 		
 		
-			if (int(hoursahead) < hoursahead):
-				hoursahead = int(hoursahead) + 1
+			#if (int(hoursahead) < hoursahead):
+			#	hoursahead = int(hoursahead) + 1
 		#hoursprev = hoursahead
 
 		timestart = nows - hoursprev * 60 * 60 - now.second
