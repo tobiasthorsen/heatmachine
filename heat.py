@@ -125,6 +125,7 @@ class Application(tk.Frame):
 		self.config = {}
 		self.wasthermocoupleOK = 1
 		self.showWarningTick = 0
+		self.heataccum = 0
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
 
@@ -162,16 +163,20 @@ class Application(tk.Frame):
   		
 
 
-	def logTemperature(self, _tempThermo, _tempInternal):
+	def logTemperature(self, _tempThermo, _tempInternal, heating):
 		t = time.time() - self.lastTemperatureLogTime
+		if (heating):
+			self.heataccum += 1
 		if (t >= 4):
-			self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal} )# Temperature(tempThermo, tempInternal))
+			print("Logging temperature ", self.heataccum)
+			self.temparray.append( {"time":int(time.time()), "tempThermo":_tempThermo, "tempInternal":_tempInternal, "heatcount": self.heataccum} )# Temperature(tempThermo, tempInternal))
 			self.lastTemperatureLogTime=time.time()
+			self.heataccum = 0
 			self.drawTemperatureGraph()
 
 			if len(self.temparray) % 10 == 0:
 				self.saveTempArray()
-				print (len(self.temparray))
+				print ("saving tempoeratures: " , len(self.temparray))
 			
 	
 	def drawTemperatureGraph(self) :
@@ -278,17 +283,34 @@ class Application(tk.Frame):
 		# draw the graphs..		
 		prevx = -1
 		prevy = 0
+		prevtime = 0
+		heatcount = 0
+		heatcountmax = 0
 		for t in self.temparray:
 			if (t["time"]<timestart):
+				prevtime = t["time"]
 				continue
 			x = (t["time"] - timestart) / 60 * pixelsprminute
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
 			dx = x - prevx
+			try:
+				heatcount = heatcount + int(t["heatcount"])
+			except Exception as e:
+				heatcount += 0
+			
+			
 			if (dx>1 ):#and x-prevx>1):
+				dt = t["time"] - prevtime
+				heatcountmax = dt * 4
+				#print("deltatime: ", dt, heatcountmax, heatcount)
 				if (dx < 8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+				heaty =  self.canvas_height - (50 / heatcountmax) * heatcount
+				self.temperatureCanvas.create_line(x,self.canvas_height,x,heaty, fill="red")
 				prevx = x
 				prevy = y
+				prevtime = t["time"]
+				heatcount = 0
 
 			#print(t["time"])
 
@@ -687,7 +709,7 @@ class Application(tk.Frame):
 				self.ovenWarning.pack_forget()
 				self.temperatureLabel.config(fg="white")
 
-		self.logTemperature(self.oven.temperature, self.oven.cputemperature)
+		self.logTemperature(self.oven.temperature, self.oven.cputemperature, self.oven.heating)
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
 
