@@ -39,6 +39,15 @@
 			{"time":2, "temperature":140},
 			{"time":3.5, "temperature":200}
 		]
+	},
+	"heatfast": {
+		"type": "graph",
+		"graph" : [
+			{"time":0.01, "temperature":100, "mustreach" : 1},
+			{"time":0.02, "temperature":200, "mustreach" : 1},
+			{"time":0.03, "temperature":300, "mustreach" : 1},
+			{"time":0.04, "temperature":400, "mustreach" : 1},
+			{"time":0.05, "temperature":500, "mustreach" : 1}
+		]
 	}
-
 }
