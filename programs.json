@@ -47,7 +47,7 @@
 			{"time":0.2, "temperature":200, "mustreach" : 1},
 			{"time":0.3, "temperature":300, "mustreach" : 1},
 			{"time":0.4, "temperature":400, "mustreach" : 1},
-			{"time":0.5, "temperature":500, "mustreach" : 1},
+			{"time":0.5, "temperature":500, "mustreach" : 1}
 		]
 	}
 }
