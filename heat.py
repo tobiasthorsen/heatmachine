@@ -57,6 +57,7 @@ class Oven:
 		self.trackTemperature = 0
 		self.closed = 1
 		self.thermocoupleOK = 1
+
 	def update(self):
 		if self.mode == "real":
 			# get the temperature from the max31855
@@ -128,6 +129,7 @@ class Application(tk.Frame):
 		self.heataccum = 0
 		self.programstarttime = time.time()
 		self.mustreahtemperature = 0
+
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
 
@@ -156,6 +158,7 @@ class Application(tk.Frame):
 	def setupTemperatureArray(self):
 		self.temparray = []
 		self.lastTemperatureLogTime = 0
+		self.temparrayStartDraw = 0
 		try:
 			file = open('./temperatures.json', 'r')
 			#print file
@@ -214,23 +217,35 @@ class Application(tk.Frame):
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
-		discardtime = 48
+		discardtime = 48 # disscard temperatures older than 48 hours
 		discardtime = nows - discardtime * 60 * 60
 		idx = 0
 		while (len(self.temparray)>0 and self.temparray[0]["time"] < discardtime):
 			self.temparray.pop(0)
 			#print ("can delete", idx)
-			idx += 1 
+			#idx += 1 
 		#print("deleted ", idx)
 
 
 		# find tempmin and max
-		for t in self.temparray:
+		idx = self.temparrayStartDraw
+		while (idx<len(self.temparray)):
+			t = self.temparray[idx]
+			idx += 1
 			if (t["time"]<timestart):
+				self.temparrayStartDraw = idx
+
 				continue
 			if (t["tempThermo"] > tempmax):
 				tempmax = t["tempThermo"]
-		
+
+			
+		#for t in self.temparray:
+		#	if (t["time"]<timestart):
+		#		continue
+		#	if (t["tempThermo"] > tempmax):
+		#		tempmax = t["tempThermo"]
+		#
 		tempmax *= 1.1
 
 		self.temperatureCanvas.create_text(self.canvas_width-20, 20, text=str(int(tempmax)), fill="yellow", font=('Helvetica 13 bold'))
@@ -290,7 +305,12 @@ class Application(tk.Frame):
 		prevtime = 0
 		heatcount = 0
 		heatcountmax = 0
-		for t in self.temparray:
+		dutyavg = self.canvas_height
+		idx = self.temparrayStartDraw
+		while (idx<len(self.temparray)):
+			t = self.temparray[idx]
+			idx += 1
+		#for t in self.temparray:
 			if (t["time"]<timestart):
 				prevtime = t["time"]
 				continue
@@ -309,8 +329,15 @@ class Application(tk.Frame):
 				#print("deltatime: ", dt, heatcountmax, heatcount)
 				if (dx < 8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+				
 				heaty =  self.canvas_height - (50 / heatcountmax) * heatcount
-				self.temperatureCanvas.create_line(x,self.canvas_height,x,heaty, fill="red")
+				prevduty = dutyavg
+				dutyavg = (dutyavg * 5 + heaty) / 6
+				accx = 0
+				while (accx<dx):
+					self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx,heaty, fill="red")
+					accx += 1
+				self.temperatureCanvas.create_line(prevx,prevduty, x, dutyavg, fill="white")
 				prevx = x
 				prevy = y
 				prevtime = t["time"]
@@ -543,10 +570,10 @@ class Application(tk.Frame):
 					mustreach = 0
 					try:
 						mustreach = p["mustreach"]
-						print("mustrie")
+						#print("mustrie")
 					except Exception as e:
 						mustreach = 0
-						p["mustreach"] = 0
+						#p["mustreach"] = 0
 						
 					print("init", p)
 				self.program["initialized"] = 1
