@@ -44,13 +44,10 @@
 		"type": "graph",
 		"graph" : [
 			{"time":0.1, "temperature":100, "mustreach" : 1},
-			{"time":0.2, "temperature":180, "mustreach" : 1},
-			{"time":0.3, "temperature":150, "mustreach" : 1},
-			{"time":0.4, "temperature":200, "mustreach" : 1},
-			{"time":0.5, "temperature":170, "mustreach" : 1},
-			{"time":0.6, "temperature":240, "mustreach" : 1},
-			{"time":0.7, "temperature":190, "mustreach" : 1},
-			{"time":0.8, "temperature":250, "mustreach" : 1}
+			{"time":0.2, "temperature":200, "mustreach" : 1},
+			{"time":0.3, "temperature":300, "mustreach" : 1},
+			{"time":0.4, "temperature":400, "mustreach" : 1},
+			{"time":0.5, "temperature":500, "mustreach" : 1},
 		]
 	}
 }
