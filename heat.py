@@ -438,12 +438,12 @@ class Application(tk.Frame):
                     			foreground = "white",
                     			background = "red")
 
-			but =  tk.Button(self.activeProgramFrame,  width=15, height=2, text="ON", command=self.buttonClickOn, font=("Arial Bold", 25))
+			but =  tk.Button(self.activeProgramFrame,  width=7, height=1, text="ON", command=self.buttonClickOn, font=("Arial Bold", 25))
 			but.place(x=10, y=30)
 			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 				
 
-			but = tk.Button(self.activeProgramFrame, width=15, height=2, text="OFF", command=self.buttonClickOff, font=("Arial Bold", 25))
+			but = tk.Button(self.activeProgramFrame, width=7, height=1, text="OFF", command=self.buttonClickOff, font=("Arial Bold", 25))
 			but.place(x=10, y=100)
 			self.programbuttons['turnOff'] = but #pack(side=TOP, anchor=NW)
 			
