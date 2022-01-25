@@ -276,7 +276,7 @@ class Application(tk.Frame):
 		while (t<tempmax):
 		
 			y = (t - tempmin) * pixelsprdegree
-			self.temperatureCanvas.create_line(0, y, self.canvas_width, y, fill="#224499")
+			self.temperatureCanvas.create_line(0, y, self.canvas_width, y, fill="#002277")
 			t+= 100
 		
 
