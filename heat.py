@@ -255,6 +255,7 @@ class Application(tk.Frame):
 
 		
 
+		# draw hour lines
 		t = timestart
 		timeoff = 60 - now.minute
 		pixelsprminute = float(self.canvas_width) / (float(hoursahead) + float(hoursprev)) / 60
@@ -269,6 +270,15 @@ class Application(tk.Frame):
 			self.temperatureCanvas.create_text(x, 10, text=timetext, fill="white", font=('Helvetica 12 bold'))
 			t+=(60*60)
 			hour += 1
+
+		# draw temperatures pr 100
+		t = 0
+		while (t<tempmax):
+		
+			y = (t - tempmin) * pixelsprdegree
+			self.temperatureCanvas.create_line(0, y, self.canvas_width, y, fill="#224499")
+			t+= 100
+		
 
 		# draw a bar at the now time.
 		x = (nows-timestart) / 60 * pixelsprminute
