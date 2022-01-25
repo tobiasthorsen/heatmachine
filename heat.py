@@ -129,6 +129,7 @@ class Application(tk.Frame):
 		self.heataccum = 0
 		self.programstarttime = time.time()
 		self.mustreahtemperature = 0
+		self.zoomlevel = 1.0
 
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
@@ -191,8 +192,8 @@ class Application(tk.Frame):
 		# draw the grid first.
 		nows = time.time()
 		now = datetime.now()
-		hoursprev = 1
-		hoursahead = 1
+		hoursprev = 1.0 * self.zoomlevel
+		hoursahead = 1.0
 		tempmax = 50
 		tempmin = 0
 		
@@ -206,13 +207,15 @@ class Application(tk.Frame):
 					hoursahead = t["time"]
 			if self.programRunning:
 				
-				if (int(programtime) > hoursprev):
-					hoursprev = int(programtime)
+				if (programtime > hoursprev):
+					hoursprev = programtime
 		
 		
 			#if (int(hoursahead) < hoursahead):
 			#	hoursahead = int(hoursahead) + 1
 		#hoursprev = hoursahead
+		if (self.zoomlevel < 1):
+			hoursahead = hoursahead*self.zoomlevel
 
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
@@ -248,7 +251,7 @@ class Application(tk.Frame):
 		#
 		tempmax *= 1.1
 
-		self.temperatureCanvas.create_text(self.canvas_width-20, 20, text=str(int(tempmax)), fill="yellow", font=('Helvetica 13 bold'))
+		self.temperatureCanvas.create_text(self.canvas_width-20, 20, text=str(int(tempmax)), fill="yellow", font=('Helvetica 12 bold'))
 
 		
 
@@ -263,7 +266,7 @@ class Application(tk.Frame):
 			x = ((t-timestart)/60 + timeoff) * pixelsprminute
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height)
 			timetext = str((hour + 24) % 24) + ":00"
-			self.temperatureCanvas.create_text(x, self.canvas_height-20, text=timetext, fill="white", font=('Helvetica 15 bold'))
+			self.temperatureCanvas.create_text(x, 10, text=timetext, fill="white", font=('Helvetica 12 bold'))
 			t+=(60*60)
 			hour += 1
 
@@ -395,6 +398,11 @@ class Application(tk.Frame):
 		self.canvas_height = 270
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
+		btn = tk.Button(temperatureGraph, text="-", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomOut)
+		btn.place(x=0, y=self.canvas_height - 40)
+
+		btn = tk.Button(temperatureGraph, text="+", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomIn)
+		btn.place(x=40, y=self.canvas_height - 40)
 
 		programSelectFrame = tk.Frame(self, bg="black", width=windowWidth*(.95),height=100)
 		programSelectFrame.pack_propagate(False)
@@ -434,7 +442,22 @@ class Application(tk.Frame):
 		"""
 		
 		#self.now.set(current_iso8601())
-	
+	def onZoomOut(self):
+		if (self.zoomlevel<1):
+			self.zoomlevel = self.zoomlevel * 2
+		else:
+			self.zoomlevel += 1 #self.zoomlevel + 1
+		print ("zoom out ", self.zoomlevel)
+		self.drawTemperatureGraph()
+		pass
+	def onZoomIn(self):
+		if (self.zoomlevel > 1.5):
+			self.zoomlevel -= 1
+		else:
+			self.zoomlevel = self.zoomlevel / 2
+		print ("zoom in ", self.zoomlevel)
+		self.drawTemperatureGraph()
+
 	def onProgramClick(self, program):
 		print("click program: ", program)
 		
@@ -646,8 +669,8 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.programbuttons['start'].config(state= DISABLED)
 		self.programbuttons['stop'].place(x=10, y=100)
-		self.programbuttons['forward'].place(x=400, y=92)
-		self.programbuttons['back'].place(x=350, y=92)
+		self.programbuttons['forward'].place(x=400, y=102)
+		self.programbuttons['back'].place(x=350, y=102)
 		
 
 		
