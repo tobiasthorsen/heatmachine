@@ -636,11 +636,11 @@ class Application(tk.Frame):
 		self.drawTemperatureGraph()
 
 	def buttonClickTimeForward(self):
-		self.programstarttime -= 60
+		self.programstarttime -= 60 * 10
 		self.drawTemperatureGraph()
 
 	def buttonClickTimeBack(self):
-		self.programstarttime += 60
+		self.programstarttime += 60 * 10
 		if (self.programstarttime > time.time()):
 			self.programstarttime = time.time()
 		self.drawTemperatureGraph()
