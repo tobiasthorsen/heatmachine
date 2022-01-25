@@ -725,12 +725,15 @@ class Application(tk.Frame):
 							print("encountered ", t)
 							# we encountered this point just now. Are we allowed>
 							offsettime = 0
-							if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
-								print("mustreach ", t["mustreach"])
-								if t["rise"] and self.oven.temperature<t["temperature"]:
-									offsettime = 1
-								elif not t["rise"] and self.oven.temperature>t["temperature"]:
-									offsettime = 1
+							try:
+								if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
+									print("mustreach ", t["mustreach"])
+									if t["rise"] and self.oven.temperature<t["temperature"]:
+										offsettime = 1
+									elif not t["rise"] and self.oven.temperature>t["temperature"]:
+										offsettime = 1
+							except Exception as e:
+								pass
 
 							if offsettime:
 								print("do offset!")
