@@ -768,16 +768,16 @@ class Application(tk.Frame):
 
 		self.wasclosed = self.oven.closed
 
-		if (self.oven.closed): 
+		#if (self.oven.closed): 
 			
 			
-			if (self.oven.heating and not self.washeating):
-				self.temperatureLabel.config(bg="red")
+		if (self.oven.heating and not self.washeating):
+			self.temperatureLabel.config(bg="red")
 
-			elif (not self.oven.heating and self.washeating): 
-				self.temperatureLabel.config(bg="black")
-			
-			self.washeating = self.oven.heating
+		elif (not self.oven.heating and self.washeating): 
+			self.temperatureLabel.config(bg="black")
+		
+		self.washeating = self.oven.heating
 
 		#if (self.oven.thermocoupleOK and not  self.wasthermocoupleOK):
 		#	self.ovenWarning.pack_forget()
