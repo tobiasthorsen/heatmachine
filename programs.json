@@ -28,7 +28,7 @@
 		"graph" : [
 			{"time":1, "temperature":100},
 			{"time":3, "temperature":300},
-			{"time":4, "temperature":1080, "mustreach" : 1}
+			{"time":4, "temperature":1020, "mustreach" : 1}
 		]
 	},
 	"dry": {
