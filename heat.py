@@ -310,6 +310,7 @@ class Application(tk.Frame):
 		heatcountmax = 0
 		dutyavg = self.canvas_height
 		idx = self.temparrayStartDraw
+		firstx = -1
 		while (idx<len(self.temparray)):
 			t = self.temparray[idx]
 			idx += 1
@@ -320,6 +321,10 @@ class Application(tk.Frame):
 			x = (t["time"] - timestart) / 60 * pixelsprminute
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
 			dx = x - prevx
+			if (firstx == -1):
+				firstx = x
+
+
 			try:
 				heatcount = heatcount + int(t["heatcount"])
 			except Exception as e:
@@ -347,6 +352,10 @@ class Application(tk.Frame):
 				heatcount = 0
 
 			#print(t["time"])
+		
+		#//if firstx > 2 and self.temparrayStartDraw > 10:
+		#	self.temparrayStartDraw -= 10
+
 
 	
 	def saveTempArray(self):
@@ -448,6 +457,7 @@ class Application(tk.Frame):
 		else:
 			self.zoomlevel += 1 #self.zoomlevel + 1
 		print ("zoom out ", self.zoomlevel)
+		self.temparrayStartDraw = 0
 		self.drawTemperatureGraph()
 		pass
 	def onZoomIn(self):
@@ -456,6 +466,7 @@ class Application(tk.Frame):
 		else:
 			self.zoomlevel = self.zoomlevel / 2
 		print ("zoom in ", self.zoomlevel)
+		self.temparrayStartDraw = 0
 		self.drawTemperatureGraph()
 
 	def onProgramClick(self, program):
