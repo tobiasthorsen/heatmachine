@@ -196,7 +196,7 @@ class Application(tk.Frame):
 		hoursahead = 1.0
 		tempmax = 50
 		tempmin = 0
-		
+		programtime = 0
 		# look at graph to adjust tempmax and hours ahead and behind
 		if (self.program["type"]=="graph"):
 			programtime = (nows - self.programstarttime) / 60 / 60
@@ -204,7 +204,7 @@ class Application(tk.Frame):
 				if (t["temperature"] > tempmax):
 					tempmax = t["temperature"]
 				if (t["time"]-programtime   > hoursahead):
-					hoursahead = t["time"]
+					hoursahead = t["time"]-programtime
 			if self.programRunning:
 				
 				if (programtime > hoursprev):
@@ -217,6 +217,8 @@ class Application(tk.Frame):
 		if (self.zoomlevel < 1):
 			hoursahead = hoursahead*self.zoomlevel
 
+
+		print("hoursahead: ", hoursahead, hoursprev, programtime)
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
@@ -257,17 +259,19 @@ class Application(tk.Frame):
 
 		# draw hour lines
 		t = timestart
-		timeoff = 60 - now.minute
+		#timestartmin = (timestart/60)
+
+		timeoff = ((nows - timestart) / 60) % 60 # 60 - now.minute
 		pixelsprminute = float(self.canvas_width) / (float(hoursahead) + float(hoursprev)) / 60
 		pixelsprdegree = float(self.canvas_height) / (tempmax - tempmin)
 		#print "pixelsprdegree " + str(pixelsprdegree)
-		hour = now.hour - hoursprev + 1
+		hour = int(now.hour - int(hoursprev) + 24) % 24 #  (int( now.hour - hoursprev + 1) + 24) % 24
 		while t<timeend:
 			# draw a line at this point + offset (each hour bar)
 			x = ((t-timestart)/60 + timeoff) * pixelsprminute
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height)
-			timetext = str((hour + 24) % 24) + ":00"
-			self.temperatureCanvas.create_text(x, 10, text=timetext, fill="white", font=('Helvetica 12 bold'))
+			timetext = str(hour % 24) + ":00"
+			self.temperatureCanvas.create_text(x, 12, text=timetext, fill="white", font=('Helvetica 12 bold'))
 			t+=(60*60)
 			hour += 1
 
