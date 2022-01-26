@@ -753,7 +753,7 @@ class Application(tk.Frame):
 						prevtime = timesec
 						prevtemp = t["temperature"]
 						if t["encountered"] == 0:
-							print("encountered ", t)
+							#print("encountered ", t)
 							# we encountered this point just now. Are we allowed>
 							offsettime = 0
 							try:
@@ -767,7 +767,7 @@ class Application(tk.Frame):
 								pass
 
 							if offsettime:
-								print("do offset!")
+								#print("do offset!")
 								foundme = 0
 								self.mustreahtemperature = t["temperature"]
 								for off in self.program["graph"]:
@@ -776,9 +776,9 @@ class Application(tk.Frame):
 										foundme = 1
 									
 									if (foundme):
-										print("set ", off["targettime"])
-										off["targettime"] = float(off["targettime"]) + 1.0/240
-										print("after ", off["targettime"])
+										#print("set ", off["targettime"])
+										off["targettime"] = float(off["targettime"]) + 1.0/60 #// move 1 minute ahead
+										#print("after ", off["targettime"])
 							else:
 								t["encountered"]=1
 								self.mustreahtemperature = 0

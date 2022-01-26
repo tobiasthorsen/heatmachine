@@ -4,14 +4,11 @@
 		"temperature": 35
 	},
 
-	"steadyrise": {
+	"onethousand": {
 		"type": "graph",
 		"graph" : [
-			{"time":0.001, "temperature":30 , "mustreach": 1},
-			{"time":0.003, "temperature":40, "mustreach": 1},
-			{"time":0.1, "temperature":30, "mustreach": 1},
-			{"time":0.3, "temperature":40},
-			{"time":0.35, "temperature":25}
+			{"time":0.001, "temperature":100 , "mustreach": 1},
+			{"time":0.003, "temperature":1000, "mustreach": 1}
 		]
 	},
 
