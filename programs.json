@@ -8,7 +8,7 @@
 		"type": "graph",
 		"graph" : [
 			{"time":0.001, "temperature":100 , "mustreach": 1},
-			{"time":0.003, "temperature":1000, "mustreach": 1}
+			{"time":0.003, "temperature":860, "mustreach": 1}
 		]
 	},
 
