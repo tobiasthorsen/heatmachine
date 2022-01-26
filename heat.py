@@ -130,6 +130,7 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.mustreahtemperature = 0
 		self.zoomlevel = 1.0
+		self.programRunning = 0
 
 		#GPIO.setmode(GPIO.BOARD)
 		self.loadPrograms()
@@ -207,8 +208,8 @@ class Application(tk.Frame):
 					hoursahead = t["time"]-programtime
 			if self.programRunning:
 				
-				if (programtime > hoursprev):
-					hoursprev = programtime
+				if (programtime + .1 > hoursprev):
+					hoursprev = programtime + .1
 		
 		
 			#if (int(hoursahead) < hoursahead):
@@ -261,7 +262,7 @@ class Application(tk.Frame):
 		t = timestart
 		#timestartmin = (timestart/60)
 
-		timeoff = ((nows - timestart) / 60) % 60 # 60 - now.minute
+		timeoff = ((nows - timestart) / 60) % 60 - now.minute # 60 - now.minute
 		pixelsprminute = float(self.canvas_width) / (float(hoursahead) + float(hoursprev)) / 60
 		pixelsprdegree = float(self.canvas_height) / (tempmax - tempmin)
 		#print "pixelsprdegree " + str(pixelsprdegree)
@@ -288,6 +289,10 @@ class Application(tk.Frame):
 		x = (nows-timestart) / 60 * pixelsprminute
 		self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="white")
 
+		# draw a bar at the now time.
+		if (self.programRunning):
+			x = (self.programstarttime - timestart) / 60 * pixelsprminute
+			self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="green")
 		
 		# draw the projected temperaturecurve
 		
@@ -592,14 +597,23 @@ class Application(tk.Frame):
 			lbl.place(x=225,y=92)
 			self.programbuttons['runtime'] = lbl
 
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<", fg="black", command=self.buttonClickTimeBack)
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<<", fg="black", command=self.buttonClickTimeBackBig)
 			but.place(x=300, y=92)
 			but.place_forget()
-			self.programbuttons['back'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">", fg="black", command=self.buttonClickTimeForward)
+			self.programbuttons['backbig'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<", fg="black", command=self.buttonClickTimeBack)
 			but.place(x=350, y=92)
 			but.place_forget()
+			self.programbuttons['back'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">", fg="black", command=self.buttonClickTimeForward)
+			but.place(x=400, y=92)
+			but.place_forget()
 			self.programbuttons['forward'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">>", fg="black", command=self.buttonClickTimeForwardBig)
+			but.place(x=450, y=92)
+			but.place_forget()
+			self.programbuttons['forwardbig'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 
 			
 			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
@@ -639,16 +653,25 @@ class Application(tk.Frame):
 
 		self.drawTemperatureGraph()
 
-	def buttonClickTimeForward(self):
-		self.programstarttime -= 60 * 10
+	def buttonClickTimeForwardBig(self):
+		self.programstarttime -= 60 * 30
 		self.drawTemperatureGraph()
 
-	def buttonClickTimeBack(self):
-		self.programstarttime += 60 * 10
+	def buttonClickTimeBackBig(self):
+		self.programstarttime += 60 * 30
 		if (self.programstarttime > time.time()):
 			self.programstarttime = time.time()
 		self.drawTemperatureGraph()
-		
+	def buttonClickTimeForward(self):
+		self.programstarttime -= 60 * 5
+		self.drawTemperatureGraph()
+
+	def buttonClickTimeBack(self):
+		self.programstarttime += 60 * 5
+		if (self.programstarttime > time.time()):
+			self.programstarttime = time.time()
+		self.drawTemperatureGraph()
+
 
 	def checkbox(self):
 		if (self.usetemp.get() == 0):
@@ -694,8 +717,12 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.programbuttons['start'].config(state= DISABLED)
 		self.programbuttons['stop'].place(x=10, y=100)
-		self.programbuttons['forward'].place(x=400, y=102)
-		self.programbuttons['back'].place(x=350, y=102)
+		
+		self.programbuttons['backbig'].place(x=350, y=102)
+		self.programbuttons['back'].place(x=400, y=102)
+		
+		self.programbuttons['forward'].place(x=450, y=102)
+		self.programbuttons['forwardbig'].place(x=500, y=102)
 		
 
 		
