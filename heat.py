@@ -281,7 +281,7 @@ class Application(tk.Frame):
 		while (t<tempmax):
 		
 			y = (t - tempmin) * pixelsprdegree
-			self.temperatureCanvas.create_line(0, y, self.canvas_width, y, fill="#002277")
+			self.temperatureCanvas.create_line(0, y, self.canvas_width, y, fill="#2244aa")
 			t+= 100
 		
 
@@ -294,6 +294,7 @@ class Application(tk.Frame):
 			x = (self.programstarttime - timestart) / 60 * pixelsprminute
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="green")
 		
+		nowx = x
 		# draw the projected temperaturecurve
 		
 		prevx = -1
@@ -307,7 +308,9 @@ class Application(tk.Frame):
 				timesec = t["targettime"] * 60 * 60 + startdisplaytime
 				x = (timesec - timestart ) / 60 * pixelsprminute
 				y = self.canvas_height - t["temperature"] * pixelsprdegree
-				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
+				if (dx > -8):
+					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
+				
 				prevx = x
 				prevy = y
 
@@ -322,24 +325,32 @@ class Application(tk.Frame):
 					x = 0 #print("x")
 		
 		# draw the graphs..		
-		prevx = -1
+		prevx = nowx
 		prevy = 0
 		prevtime = 0
 		heatcount = 0
 		heatcountmax = 0
 		dutyavg = self.canvas_height
-		idx = self.temparrayStartDraw
+		#idx = self.temparrayStartDraw
+		idx = len(self.temparray) - 1
 		firstx = -1
-		while (idx<len(self.temparray)):
+		while (idx>=0): #len(self.temparray)):
 			t = self.temparray[idx]
-			idx += 1
-		#for t in self.temparray:
-			if (t["time"]<timestart):
-				prevtime = t["time"]
-				continue
+			idx -= 1
+			
+			#if (t["time"]<timestart):
+			#	prevtime = t["time"]
+			#	continue
 			x = (t["time"] - timestart) / 60 * pixelsprminute
+			
+			if (x < 0): # we are outside
+				break
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
+
 			dx = x - prevx
+
+			#print("draw" , idx, x, y, dx)
+
 			if (firstx == -1):
 				firstx = x
 
@@ -350,12 +361,12 @@ class Application(tk.Frame):
 				heatcount += 0
 			
 			
-			if (dx>1 ):#and x-prevx>1):
+			if (dx<-1 ):#and x-prevx>1):
 				dt = t["time"] - prevtime
 				heatcountmax = dt * 4
 				#print("deltatime: ", dt, heatcountmax, heatcount)
-				if (dx < 8):
-					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+				#if (dx > -8):
+				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				
 				heaty =  self.canvas_height - (50 / heatcountmax) * heatcount
 				prevduty = dutyavg
