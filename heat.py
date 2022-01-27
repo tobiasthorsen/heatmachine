@@ -326,7 +326,7 @@ class Application(tk.Frame):
 		
 		# draw the graphs..		
 		prevx = nowx
-		prevy = 0
+		prevy = -1
 		prevtime = 0
 		heatcount = 0
 		heatcountmax = 0
@@ -346,6 +346,8 @@ class Application(tk.Frame):
 			if (x < 0): # we are outside
 				break
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
+			if (prevy < 0):
+				prevy = 0
 
 			dx = x - prevx
 
