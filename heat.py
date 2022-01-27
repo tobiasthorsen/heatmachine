@@ -364,9 +364,9 @@ class Application(tk.Frame):
 			if (dx<-1 ):#and x-prevx>1):
 				dt = t["time"] - prevtime
 				heatcountmax = dt * 4
-				#print("deltatime: ", dt, heatcountmax, heatcount)
-				#if (dx > -8):
-				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
+				#print("deltatime: ", dt, heatcountmax, heatcount,dx)
+				if (dx > -8):
+					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				
 				heaty =  self.canvas_height - (50 / heatcountmax) * heatcount
 				prevduty = dutyavg
@@ -440,8 +440,11 @@ class Application(tk.Frame):
 		btn = tk.Button(temperatureGraph, text="-", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomOut)
 		btn.place(x=0, y=self.canvas_height - 40)
 
-		btn = tk.Button(temperatureGraph, text="+", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomIn)
+		btn = tk.Button(temperatureGraph, text="x", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomReset)
 		btn.place(x=40, y=self.canvas_height - 40)
+
+		btn = tk.Button(temperatureGraph, text="+", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomIn)
+		btn.place(x=80, y=self.canvas_height - 40)
 
 		programSelectFrame = tk.Frame(self, bg="black", width=windowWidth*(.95),height=100)
 		programSelectFrame.pack_propagate(False)
@@ -498,6 +501,10 @@ class Application(tk.Frame):
 		print ("zoom in ", self.zoomlevel)
 		self.temparrayStartDraw = 0
 		self.drawTemperatureGraph()
+	def onZoomReset(self):
+		self.zoomlevel = 1
+		self.drawTemperatureGraph()
+
 
 	def onProgramClick(self, program):
 		print("click program: ", program)
