@@ -346,8 +346,9 @@ class Application(tk.Frame):
 			if (x < 0): # we are outside
 				break
 			y = self.canvas_height - t["tempThermo"] * pixelsprdegree
+			
 			if (prevy < 0):
-				prevy = 0
+				prevy = y
 
 			dx = x - prevx
 
