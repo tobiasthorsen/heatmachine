@@ -331,6 +331,7 @@ class Application(tk.Frame):
 		heatcount = 0
 		heatcountmax = 0
 		dutyavg = self.canvas_height
+		dx = 0
 		#idx = self.temparrayStartDraw
 		idx = len(self.temparray) - 1
 		firstx = -1
@@ -365,19 +366,20 @@ class Application(tk.Frame):
 			
 			
 			if (dx<-1 ):#and x-prevx>1):
+				global dx
 				dt = t["time"] - prevtime
 				heatcountmax = dt * 4
-				#print("deltatime: ", dt, heatcountmax, heatcount,dx)
-				if (dx > -8):
+				print("deltatime: ", dt, heatcountmax, heatcount,dx)
+				if (dx>-8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				
 				heaty =  self.canvas_height - (50 / heatcountmax) * heatcount
 				prevduty = dutyavg
 				dutyavg = (dutyavg * 5 + heaty) / 6
 				accx = 0
-				while (accx<dx):
+				while (accx>dx):
 					self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx,heaty, fill="red")
-					accx += 1
+					accx -= 1
 				self.temperatureCanvas.create_line(prevx,prevduty, x, dutyavg, fill="white")
 				prevx = x
 				prevy = y
