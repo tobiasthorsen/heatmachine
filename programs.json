@@ -4,11 +4,11 @@
 		"temperature": 35
 	},
 
-	"onethousand": {
+	"quickbisque": {
 		"type": "graph",
 		"graph" : [
-			{"time":0.001, "temperature":100 , "mustreach": 1},
-			{"time":0.003, "temperature":860, "mustreach": 1}
+			{"time":0.01, "temperature":100 , "mustreach": 1},
+			{"time":0.1, "temperature":920, "mustreach": 1}
 		]
 	},
 
