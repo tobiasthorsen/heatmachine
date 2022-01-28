@@ -332,6 +332,7 @@ class Application(tk.Frame):
 		heatcountmax = 0
 		dutyavg = self.canvas_height
 		dx = 0
+		global dx
 		#idx = self.temparrayStartDraw
 		idx = len(self.temparray) - 1
 		firstx = -1
@@ -366,7 +367,7 @@ class Application(tk.Frame):
 			
 			
 			if (dx<-1 ):#and x-prevx>1):
-				global dx
+
 				dt = t["time"] - prevtime
 				heatcountmax = dt * 4
 				print("deltatime: ", dt, heatcountmax, heatcount,dx)
