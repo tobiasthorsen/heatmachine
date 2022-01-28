@@ -191,6 +191,7 @@ class Application(tk.Frame):
 		self.temperatureCanvas.delete("all")
 		self.temperatureCanvas.create_rectangle(0, 0, self.canvas_width, self.canvas_height, fill="#003366")
 		# draw the grid first.
+
 		nows = time.time()
 		now = datetime.now()
 		hoursprev = 1.0 * self.zoomlevel
@@ -308,8 +309,8 @@ class Application(tk.Frame):
 				timesec = t["targettime"] * 60 * 60 + startdisplaytime
 				x = (timesec - timestart ) / 60 * pixelsprminute
 				y = self.canvas_height - t["temperature"] * pixelsprdegree
-				if (dx > -8):
-					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
+				
+				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
 				
 				prevx = x
 				prevy = y
@@ -332,7 +333,7 @@ class Application(tk.Frame):
 		heatcountmax = 0
 		dutyavg = self.canvas_height
 		dx = 0
-		global dx
+
 		#idx = self.temparrayStartDraw
 		idx = len(self.temparray) - 1
 		firstx = -1
@@ -370,7 +371,7 @@ class Application(tk.Frame):
 
 				dt = t["time"] - prevtime
 				heatcountmax = dt * 4
-				print("deltatime: ", dt, heatcountmax, heatcount,dx)
+				#print("deltatime: ", dt, heatcountmax, heatcount,dx)
 				if (dx>-8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				
