@@ -295,8 +295,9 @@ class Application(tk.Frame):
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="green")
 		
 		nowx = x
-		# draw the projected temperaturecurve
 		
+
+		# draw the projected temperaturecurve
 		prevx = -1
 		prevy = 0
 		if (self.program["type"]=="graph"):
@@ -324,6 +325,32 @@ class Application(tk.Frame):
 				except:
 					x = 0 #print("x")
 		
+
+		# calculate the temperatureslope
+		idx = len(self.temparray) - 1
+		t = self.temparray[idx]
+		oldtemp = t
+		deltatime = 0
+		slope = 0
+		#print("get slope")
+		while (idx >= 0):
+			tt = self.temparray[idx]
+
+			deltatime = t["time"] - tt["time"]
+			#print ("deltatime ",deltatime)
+			if (deltatime > 60):
+				break
+			oldtemp = tt #//self.temparray[idx]
+			idx -=1
+
+		if (deltatime > 0):
+			tempdiff = t["tempThermo"] - oldtemp["tempThermo"]
+			slope = tempdiff / deltatime
+			#slope is now in degrees pr second
+			slope = slope * 60 * 60
+
+		self.temperatureSlope.place(x=nowx + 20, y=self.canvas_height*.5)
+		self.temperatureSlope.configure(text = '{0:.1f}'.format(slope) + " deg / hour")
 		# draw the graphs..		
 		prevx = nowx
 		prevy = -1
@@ -429,6 +456,8 @@ class Application(tk.Frame):
 		self.cpuTemperatureLabel = tk.Label(temperatureFrame, text="24",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
 		self.cpuTemperatureLabel.pack()
 
+
+
 		self.activeProgramFrame = tk.Frame(self, bg="black", width=windowWidth*.57,height=190)
 		self.activeProgramFrame.pack_propagate(False)
 		
@@ -443,6 +472,10 @@ class Application(tk.Frame):
 		self.canvas_height = 270
 		self.temperatureCanvas = tk.Canvas(temperatureGraph, width=self.canvas_width, height=self.canvas_height)
 		self.temperatureCanvas.pack()
+
+		self.temperatureSlope = tk.Label(temperatureGraph, text="0.0/hour",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 14))
+		self.temperatureSlope.place(x=0,y=0)
+
 		btn = tk.Button(temperatureGraph, text="-", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomOut)
 		btn.place(x=0, y=self.canvas_height - 40)
 
@@ -873,44 +906,6 @@ class Application(tk.Frame):
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
 
-		"""rj = self.thermocouple.get_rj()
-		gottemperature = 0
-		try:
-			tc = self.thermocouple.get()
-			gottemperature = 1
-		except MAX31855Error as e:
-			tc = "Error: "+ e.value
-			#running = False
-
-		#print("tc: {} and rj: {}".format(tc, rj))
-		
-		if platform == "darwin": # simulate some stuff to display
-			tc = math.cos(time.time()/60/40) * 300 + 400
-			rj = math.sin(time.time()/60/30) * 25 + 25
-
-
-		if gottemperature:
-			self.temperatureLabel.configure(text='{0:.1f}'.format(tc)) 
-		else:
-			self.temperatureLabel.configure(text='X') 
-			tc = 0
-		
-
-		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(rj)) 
-
-		self.logTemperature(tc,rj)
-
-		#self.temperatureLabel['text'] = tc
-		#self.cpuTemperatureLabel['text'] = rj
-
-		onoff = 0	
-		if int(time.time() ) % 2 == 0:
-			onoff = 1
-
-		# GPIO.output(4,  onoff)
-		# schedule timer to call myself after 1 second
-		
-		"""
 		self.after(250, self.onUpdate)
 
 
