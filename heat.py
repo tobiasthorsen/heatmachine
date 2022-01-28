@@ -235,14 +235,13 @@ class Application(tk.Frame):
 
 
 		# find tempmin and max
-		idx = self.temparrayStartDraw
-		while (idx<len(self.temparray)):
+		idx = len(self.temparray)-1 # self.temparrayStartDraw
+		while (idx>0) : #len(self.temparray)):
 			t = self.temparray[idx]
-			idx += 1
+			idx -= 1
 			if (t["time"]<timestart):
-				self.temparrayStartDraw = idx
+				break
 
-				continue
 			if (t["tempThermo"] > tempmax):
 				tempmax = t["tempThermo"]
 
