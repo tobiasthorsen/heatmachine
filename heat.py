@@ -267,12 +267,14 @@ class Application(tk.Frame):
 		pixelsprdegree = float(self.canvas_height) / (tempmax - tempmin)
 		#print "pixelsprdegree " + str(pixelsprdegree)
 		hour = int(now.hour - int(hoursprev) + 24) % 24 #  (int( now.hour - hoursprev + 1) + 24) % 24
-		while t<timeend:
+		while 1: #t<timeend:
 			# draw a line at this point + offset (each hour bar)
 			x = ((t-timestart)/60 + timeoff) * pixelsprminute
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height)
 			timetext = str(hour % 24) + ":00"
 			self.temperatureCanvas.create_text(x, 12, text=timetext, fill="white", font=('Helvetica 12 bold'))
+			if (t>timeend):
+				break
 			t+=(60*60)
 			hour += 1
 
