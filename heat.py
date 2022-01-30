@@ -383,7 +383,7 @@ class Application(tk.Frame):
 
 			dx = x - prevx
 
-			#print("draw" , idx, x, y, dx)
+			print("draw" , idx, x, y, dx)
 
 			if (firstx == -1):
 				firstx = x
@@ -538,7 +538,7 @@ class Application(tk.Frame):
 		if (self.zoomlevel > 1.5):
 			self.zoomlevel -= 1
 		else:
-			self.zoomlevel = self.zoomlevel / 2
+			self.zoomlevel = float(self.zoomlevel) / 2
 		print ("zoom in ", self.zoomlevel)
 		self.temparrayStartDraw = 0
 		self.drawTemperatureGraph()
