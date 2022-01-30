@@ -224,7 +224,7 @@ class Application(tk.Frame):
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
-		discardtime = 48 # disscard temperatures older than 48 hours
+		discardtime = 48 # discard temperatures older than 48 hours
 		discardtime = nows - discardtime * 60 * 60
 		idx = 0
 		while (len(self.temparray)>0 and self.temparray[0]["time"] < discardtime):
@@ -290,13 +290,15 @@ class Application(tk.Frame):
 		# draw a bar at the now time.
 		x = (nows-timestart) / 60 * pixelsprminute
 		self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="white")
+		
+		nowx = x
 
-		# draw a bar at the now time.
+		# draw a bar at the program start time
 		if (self.programRunning):
 			x = (self.programstarttime - timestart) / 60 * pixelsprminute
 			self.temperatureCanvas.create_line(x,0,x,self.canvas_height, fill="green")
 		
-		nowx = x
+		
 		
 
 		# draw the projected temperaturecurve
@@ -383,7 +385,7 @@ class Application(tk.Frame):
 
 			dx = x - prevx
 
-			print("draw" , idx, x, y, dx)
+			#print("draw" , idx, x, y, dx)
 
 			if (firstx == -1):
 				firstx = x
