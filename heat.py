@@ -414,7 +414,7 @@ class Application(tk.Frame):
 					self.temperatureCanvas.create_line(x+accx, self.canvas_height,x + accx, heaty, fill="red")
 					#self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx, self.canvas_height*.5, fill="red")
 					#print("deltatime: ", dt, heatcountmax, heatcount,dx, heaty)
-					print("deltatime: ", x+accx, self.canvas_height, x + accx, heaty)
+					#print("deltatime: ", x+accx, self.canvas_height, x + accx, heaty)
 					accx -= 1
 				self.temperatureCanvas.create_line(prevx,prevduty, x, dutyavg, fill="white")
 				prevx = x
