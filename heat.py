@@ -400,8 +400,8 @@ class Application(tk.Frame):
 			if (dx<-1 ):#and x-prevx>1):
 
 				dt = t["time"] - prevtime
-				heatcountmax = dt * 4
-				#print("deltatime: ", dt, heatcountmax, heatcount,dx)
+				heatcountmax = -dt * 4
+
 				if (dx>-8):
 					self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="yellow")
 				
@@ -409,8 +409,12 @@ class Application(tk.Frame):
 				prevduty = dutyavg
 				dutyavg = (dutyavg * 5 + heaty) / 6
 				accx = 0
+
 				while (accx>dx):
-					self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx,heaty, fill="red")
+					self.temperatureCanvas.create_line(x+accx, self.canvas_height,x + accx, heaty, fill="red")
+					#self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx, self.canvas_height*.5, fill="red")
+					#print("deltatime: ", dt, heatcountmax, heatcount,dx, heaty)
+					print("deltatime: ", x+accx, self.canvas_height, x + accx, heaty)
 					accx -= 1
 				self.temperatureCanvas.create_line(prevx,prevduty, x, dutyavg, fill="white")
 				prevx = x
