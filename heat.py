@@ -32,6 +32,8 @@ PIN_THERMO_CLOCK = 14
 PIN_THERMO_DATA = 18 # cs_pin, clock_pin, data_pin
 PIN_SWITCH = 23
 
+
+
 def current_iso8601():
 	"""Get current date and time in ISO8601"""
 	# https://en.wikipedia.org/wiki/ISO_8601
@@ -57,6 +59,15 @@ class Oven:
 		self.trackTemperature = 0
 		self.closed = 1
 		self.thermocoupleOK = 1
+
+		self.kw = 2.6
+		self.kwhPrUpdate = (1.0 / 60 / 60 / 4) * (self.kw) # how many kwh pr update if on
+		
+		
+		self.updatecount = 0
+		self.kwh = 0.0
+		self.trackstarttime = time.time()
+
 
 	def update(self):
 		if self.mode == "real":
@@ -99,6 +110,17 @@ class Oven:
 			
 			elif (self.heating and self.temperature > self.targettemperature + .2):
 				self.cool()
+
+		if self.heating:
+			self.kwh += self.kwhPrUpdate
+			#print ("consume ", self.consumption)
+
+		#self.updatecount += 1
+
+		# find how percentage of on time
+		timerunning = self.updatecount / 4 # in seconds
+
+
 		#elif (self.heating):
 		#	self.cool()
 		
@@ -355,6 +377,8 @@ class Application(tk.Frame):
 
 		self.temperatureSlope.place(x=nowx + 20, y=self.canvas_height*.5)
 		self.temperatureSlope.configure(text = '{0:.1f}'.format(slope) + " deg / hour")
+
+		self.usagekwh.configure(text = '{0:.4f}'.format(self.oven.kwh) + " kWh")
 		# draw the graphs..		
 		prevx = nowx
 		prevy = -1
@@ -483,6 +507,9 @@ class Application(tk.Frame):
 
 		self.temperatureSlope = tk.Label(temperatureGraph, text="0.0/hour",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 14))
 		self.temperatureSlope.place(x=0,y=0)
+
+		self.usagekwh = tk.Label(temperatureGraph, text="0.0 kwh",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 14))
+		self.usagekwh.place(x=self.canvas_width - 80,y=self.canvas_height-25)
 
 		btn = tk.Button(temperatureGraph, text="-", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomOut)
 		btn.place(x=0, y=self.canvas_height - 40)
