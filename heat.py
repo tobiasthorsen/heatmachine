@@ -937,7 +937,10 @@ class Application(tk.Frame):
 				self.ovenWarning.pack_forget()
 				self.temperatureLabel.config(fg="white")
 
+		t1 = time.time()
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature, self.oven.heating)
+		t2 = time.time()
+		print("log time ", (t2-t1))
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
 
