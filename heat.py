@@ -204,7 +204,10 @@ class Application(tk.Frame):
 			self.drawTemperatureGraph()
 
 			if len(self.temparray) % 10 == 0:
+				t1 = time.time()
 				self.saveTempArray()
+				t2 = time.time()
+				print("save time ", (t2-t1))
 				print ("saving tempoeratures: " , len(self.temparray))
 			
 	
