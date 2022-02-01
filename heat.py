@@ -434,12 +434,12 @@ class Application(tk.Frame):
 				dutyavg = (dutyavg * 5 + heaty) / 6
 				accx = 0
 
-				while (accx>dx):
-					self.temperatureCanvas.create_line(x+accx, self.canvas_height,x + accx, heaty, fill="red")
+				#while (accx>dx):
+				self.temperatureCanvas.create_line(x, self.canvas_height,x , heaty, fill="red")
 					#self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx, self.canvas_height*.5, fill="red")
 					#print("deltatime: ", dt, heatcountmax, heatcount,dx, heaty)
 					#print("deltatime: ", x+accx, self.canvas_height, x + accx, heaty)
-					accx -= 1
+					#accx -= 1
 				self.temperatureCanvas.create_line(prevx,prevduty, x, dutyavg, fill="white")
 				prevx = x
 				prevy = y
