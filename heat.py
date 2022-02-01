@@ -249,7 +249,7 @@ class Application(tk.Frame):
 		timestart = nows - hoursprev * 60 * 60 - now.second
 		timeend = nows + hoursahead * 60 * 60 - now.second
 
-		discardtime = 48 # discard temperatures older than 48 hours
+		discardtime = 24 # discard temperatures older than 48 hours
 		discardtime = nows - discardtime * 60 * 60
 		idx = 0
 		while (len(self.temparray)>0 and self.temparray[0]["time"] < discardtime):
