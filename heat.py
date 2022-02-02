@@ -764,7 +764,7 @@ class Application(tk.Frame):
 		lbl = self.programbuttons["tlabel"]
 		lbl.configure(text=self.config["manualtemperature"])
 		self.oven.targettemperature = self.config["manualtemperature"] 
-
+		print ("track the temperature: ", self.config["manualtemperature"] )
 		self.checkbox()
 
 	def buttonClickTimeForwardBig(self):
