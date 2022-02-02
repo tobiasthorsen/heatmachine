@@ -627,8 +627,13 @@ class Application(tk.Frame):
 			
 			# auto button
 			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", activebackground = "#999999", height = 1, command=self.checkbox, font=("Arial Bold", 30))
-			c1.place(x=framewidth*.45 + 10, y=30)
+			c1.place(x=framewidth*.40 + 10, y=30)
 			self.programbuttons['check'] = c1
+
+			# auto button
+			c1 = tk.Button(self.activeProgramFrame, text='set', width=3, fg="white", bg="#888888", activebackground = "#999999", height = 1, command=self.snapCurrentTemperature, font=("Arial Bold", 30))
+			c1.place(x=framewidth*.60 + 10, y=30)
+			self.programbuttons['snap'] = c1
 
 			# plus button
 			btn = tk.Button(self.activeProgramFrame, width=2, height=1, text="-", font=("Arial Bold", 25), command=self.changeTemperatureDown)
@@ -747,6 +752,18 @@ class Application(tk.Frame):
 				p["encountered"] = 0
 
 		self.drawTemperatureGraph()
+
+	def snapCurrentTemperature(self):
+		if (self.usetemp.get() == 1):
+			self.usetemp.set(0)
+			
+		else:
+			self.usetemp.set(0)
+
+		self.config["manualtemperature"] = int(self.oven.temperature)
+
+
+		self.checkbox()
 
 	def buttonClickTimeForwardBig(self):
 		self.programstarttime -= 60 * 30
@@ -943,7 +960,7 @@ class Application(tk.Frame):
 		t1 = time.time()
 		self.logTemperature(self.oven.temperature, self.oven.cputemperature, self.oven.heating)
 		t2 = time.time()
-		print("log time ", (t2-t1))
+		#print("log time ", (t2-t1))
 		self.temperatureLabel.configure(text='{0:.1f}'.format(self.oven.temperature)) 
 		self.cpuTemperatureLabel.configure(text='{0:.1f}'.format(self.oven.cputemperature)) 
 
