@@ -463,10 +463,18 @@ class Application(tk.Frame):
 
 	def buttonClickOn(self):
 		self.oven.heat()
+		self.programbuttons['turnOn'].place_forget()
+
+		self.programbuttons['heatlbl'].place(x=10,y=30)
+		self.programbuttons['turnOff'].place(x=10, y=100)
+			
 		
 
 	def buttonClickOff(self):
 		self.oven.cool()
+		self.programbuttons['turnOn'].place(x=10, y=30)
+		self.programbuttons['turnOff'].place_forget()
+		self.programbuttons['heatlbl'].place_forget()
 		#GPIO.output(4,  0)
 
 	def createWidgets(self):
@@ -511,8 +519,8 @@ class Application(tk.Frame):
 		self.temperatureSlope = tk.Label(temperatureGraph, text="0.0/hour",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 14))
 		self.temperatureSlope.place(x=0,y=0)
 
-		self.usagekwh = tk.Label(temperatureGraph, text="0.0 kwh",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 14))
-		self.usagekwh.place(x=self.canvas_width - 80,y=self.canvas_height-25)
+		self.usagekwh = tk.Label(temperatureGraph, text="0.0 kwh",  fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
+		self.usagekwh.place(x=self.canvas_width - 100,y=self.canvas_height-25)
 
 		btn = tk.Button(temperatureGraph, text="-", fg="red", width=1, height = 1,  font=("Arial Bold", 20), command=self.onZoomOut)
 		btn.place(x=0, y=self.canvas_height - 40)
@@ -616,10 +624,13 @@ class Application(tk.Frame):
 			but =  tk.Button(self.activeProgramFrame,  width=7, height=1, text="ON", command=self.buttonClickOn, font=("Arial Bold", 25))
 			but.place(x=10, y=30)
 			self.programbuttons['turnOn'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-				
+			
+			lbl = tk.Label(self.activeProgramFrame, text="HEATING", fg="RED", bg="black", anchor="center", justify="center", font=("Arial Bold", 30))
+			#lbl.place(x=10,y=30)
+			self.programbuttons['heatlbl'] = lbl #pack(side=TOP, anchor=NW)
 
 			but = tk.Button(self.activeProgramFrame, width=7, height=1, text="OFF", command=self.buttonClickOff, font=("Arial Bold", 25))
-			but.place(x=10, y=100)
+			#but.place(x=10, y=100)
 			self.programbuttons['turnOff'] = but #pack(side=TOP, anchor=NW)
 			
 			##self.programbuttons['turnOff'] = tk.Button(self.activeProgramFrame, width=25, height=3, text="OFF", fg="red", command=self.buttonClickOff)
@@ -627,12 +638,12 @@ class Application(tk.Frame):
 			
 			# auto button
 			c1 = tk.Button(self.activeProgramFrame, text='AUTO', width=6, fg="white", bg="#888888", activebackground = "#999999", height = 1, command=self.checkbox, font=("Arial Bold", 30))
-			c1.place(x=framewidth*.40 + 10, y=30)
+			c1.place(x=framewidth*.36 + 10, y=30)
 			self.programbuttons['check'] = c1
 
 			# auto button
 			c1 = tk.Button(self.activeProgramFrame, text='set', width=3, fg="white", bg="#888888", activebackground = "#999999", height = 1, command=self.snapCurrentTemperature, font=("Arial Bold", 30))
-			c1.place(x=framewidth*.60 + 10, y=30)
+			c1.place(x=framewidth*.62 + 10, y=30)
 			self.programbuttons['snap'] = c1
 
 			# plus button
@@ -788,6 +799,7 @@ class Application(tk.Frame):
 
 
 	def checkbox(self):
+		self.buttonClickOff()
 		if (self.usetemp.get() == 0):
 			self.usetemp.set(1)
 			
