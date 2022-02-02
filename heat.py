@@ -761,7 +761,9 @@ class Application(tk.Frame):
 			self.usetemp.set(0)
 
 		self.config["manualtemperature"] = int(self.oven.temperature)
-
+		lbl = self.programbuttons["tlabel"]
+		lbl.configure(text=self.config["manualtemperature"])
+		self.oven.targettemperature = self.config["manualtemperature"] 
 
 		self.checkbox()
 
