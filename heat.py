@@ -461,21 +461,6 @@ class Application(tk.Frame):
 		tempfile = open('./temperatures.json', 'w')
 		json.dump(self.temparray, tempfile)
 
-	def buttonClickOn(self):
-		self.oven.heat()
-		self.programbuttons['turnOn'].place_forget()
-
-		self.programbuttons['heatlbl'].place(x=10,y=30)
-		self.programbuttons['turnOff'].place(x=10, y=100)
-			
-		
-
-	def buttonClickOff(self):
-		self.oven.cool()
-		self.programbuttons['turnOn'].place(x=10, y=30)
-		self.programbuttons['turnOff'].place_forget()
-		self.programbuttons['heatlbl'].place_forget()
-		#GPIO.output(4,  0)
 
 	def createWidgets(self):
 		
@@ -763,6 +748,26 @@ class Application(tk.Frame):
 				p["encountered"] = 0
 
 		self.drawTemperatureGraph()
+	
+	def buttonClickOn(self):
+		if (self.usetemp.get()):
+			self.checkbox()
+
+		self.oven.heat()
+		self.programbuttons['turnOn'].place_forget()
+
+		self.programbuttons['heatlbl'].place(x=10,y=30)
+		self.programbuttons['turnOff'].place(x=10, y=100)
+		
+
+
+	def buttonClickOff(self):
+		self.oven.cool()
+		self.programbuttons['turnOn'].place(x=10, y=30)
+		self.programbuttons['turnOff'].place_forget()
+		self.programbuttons['heatlbl'].place_forget()
+		#GPIO.output(4,  0)
+
 
 	def snapCurrentTemperature(self):
 		if (self.usetemp.get() == 1):
@@ -811,13 +816,13 @@ class Application(tk.Frame):
 		if (self.usetemp.get()):
 			print("setit")
 			self.programbuttons['check'].configure(bg = "red", activebackground= "#ff3333")
-			self.programbuttons['turnOn'].configure(state = DISABLED)
+			#self.programbuttons['turnOn'].configure(state = DISABLED)
 			self.programbuttons['turnOff'].configure(state = DISABLED)
 		else:
 			print("clear")
 			self.programbuttons['check'].configure(bg = "#888888",  activebackground= "#999999")
 			self.oven.cool()
-			self.programbuttons['turnOn'].configure(state = NORMAL)
+			#self.programbuttons['turnOn'].configure(state = NORMAL)
 			self.programbuttons['turnOff'].configure(state = NORMAL)
 
 		#self.config["manualtemperature"] = 
