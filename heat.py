@@ -441,8 +441,10 @@ class Application(tk.Frame):
 				accx = 0
 
 				#while (accx>dx):
-				self.temperatureCanvas.create_line(x, self.canvas_height-50 ,x , heaty, fill="green")
+				#self.temperatureCanvas.create_line(x, self.canvas_height-50 ,x , heaty, fill="green")
+
 				self.temperatureCanvas.create_line(x, self.canvas_height,x , heaty, fill="red")
+
 					#self.temperatureCanvas.create_line(x+accx,self.canvas_height,x + accx, self.canvas_height*.5, fill="red")
 					#print("deltatime: ", dt, heatcountmax, heatcount,dx, heaty)
 					#print("deltatime: ", x+accx, self.canvas_height, x + accx, heaty)
