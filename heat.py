@@ -60,14 +60,14 @@ class Oven:
 		self.closed = 1
 		self.thermocoupleOK = 1
 
-		self.kw = 2.6
+		self.kw = 2.7
 		self.kwhPrUpdate = (1.0 / 60 / 60 / 4) * (self.kw) # how many kwh pr update if on
 		
 		
 		self.updatecount = 0
 		self.kwh = 0.0
 		self.trackstarttime = time.time()
-
+		self.calibrate1000 = 955
 
 	def update(self):
 		if self.mode == "real":
@@ -76,6 +76,7 @@ class Oven:
 			gottemperature = 0
 			try:
 				tc = self.thermocouple.get()
+				tc = tc / self.calibrate1000 * 1000
 				self.temperature = tc
 				gottemperature = 1
 				self.thermocoupleOK = 1
