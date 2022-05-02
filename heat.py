@@ -67,7 +67,7 @@ class Oven:
 		self.updatecount = 0
 		self.kwh = 0.0
 		self.trackstarttime = time.time()
-		self.calibrate1000 = 955
+		self.calibrate1000 = 1000
 
 	def update(self):
 		if self.mode == "real":
