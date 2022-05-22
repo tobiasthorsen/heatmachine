@@ -17,8 +17,8 @@
 		"graph" : [
 			{"time":0.1, "temperature":40},
 			{"time":1, "temperature":100},
-			{"time":6, "temperature":600},
-			{"time":8, "temperature":980, "mustreach" : 1}
+			{"time":7, "temperature":700},
+			{"time":9, "temperature":980, "mustreach" : 1}
 		]
 	},
 	"glaze": {
@@ -26,7 +26,9 @@
 		"graph" : [
 			{"time":1, "temperature":100},
 			{"time":3, "temperature":300},
-			{"time":5, "temperature":1020, "mustreach" : 1}
+			{"time":6, "temperature":700, "mustreach" : 1},
+			{"time":8, "temperature":960, "mustreach" : 1},
+			{"time":8.5, "temperature":960}
 		]
 	},
 	"dry": {
