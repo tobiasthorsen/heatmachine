@@ -104,7 +104,7 @@ class Oven:
 
 
 		if (self.trackTemperature):
-			#print("tracking",self.targettemperature)
+			print("tracking",self.targettemperature)
 			if (not self.heating and self.temperature < self.targettemperature-.2):
 			
 				self.heat()
@@ -796,8 +796,8 @@ class Application(tk.Frame):
 
 	def buttonClickTimeBackBig(self):
 		self.programstarttime += 60 * 30
-		if (self.programstarttime > time.time()):
-			self.programstarttime = time.time()
+		#if (self.programstarttime > time.time()):
+		#	self.programstarttime = time.time()
 		self.drawTemperatureGraph()
 	def buttonClickTimeForward(self):
 		self.programstarttime -= 60 * 5
@@ -805,8 +805,8 @@ class Application(tk.Frame):
 
 	def buttonClickTimeBack(self):
 		self.programstarttime += 60 * 5
-		if (self.programstarttime > time.time()):
-			self.programstarttime = time.time()
+		#if (self.programstarttime > time.time()):
+		#	self.programstarttime = time.time()
 		self.drawTemperatureGraph()
 
 
@@ -882,62 +882,79 @@ class Application(tk.Frame):
 			prevtemp = self.program["graph"][0]["temperature"]
 			#prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
 			#startdisplaytime = nows
-			if self.programRunning:
-				targettemperature = 0
-				nowtime = time.time() - self.programstarttime
-				for t in self.program["graph"]:
-					timesec = t["targettime"] * 60 * 60 
-					if (timesec < nowtime): # now has passed the timesec time
-						prevtime = timesec
-						prevtemp = t["temperature"]
-						if t["encountered"] == 0:
-							#print("encountered ", t)
-							# we encountered this point just now. Are we allowed>
-							offsettime = 0
-							try:
-								if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
-									print("mustreach ", t["mustreach"])
-									if t["rise"] and self.oven.temperature<t["temperature"]:
-										offsettime = 1
-									elif not t["rise"] and self.oven.temperature>t["temperature"]:
-										offsettime = 1
-							except Exception as e:
-								pass
+			nowtime = time.time() - self.programstarttime
+			if (self.programRunning ):
+				if (nowtime<0):
+					h = (int(nowtime/60/60))
+					m = (int((nowtime -  (h * 60 * 60))/60))
+					s = (int(nowtime - (h * 60 * 60 + m * 60)))
 
-							if offsettime:
-								#print("do offset!")
-								foundme = 0
-								self.mustreahtemperature = t["temperature"]
-								for off in self.program["graph"]:
+					self.programbuttons['runtime'].configure(text = str(abs(h)) + ":" + str(abs(m)) + ":" + str(abs(s)))
+					self.programbuttons['targ'].configure(text = "Waiting" )
+					self.oven.cool()
+					self.oven.trackTemperature = 0
+					self.oven.targettemperature = 0
 
-									if (off == t):
-										foundme = 1
-									
-									if (foundme):
-										#print("set ", off["targettime"])
-										off["targettime"] = float(off["targettime"]) + 1.0/60 #// move 1 minute ahead
-										#print("after ", off["targettime"])
-							else:
-								t["encountered"]=1
-								self.mustreahtemperature = 0
 
-					else:
+				else:
+					targettemperature = 0
 
-						nowfactor = (nowtime - prevtime) / (timesec - prevtime)
-						targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
-						break
-				if (self.mustreahtemperature):
-					targettemperature = self.mustreahtemperature
-				self.oven.trackTemperature = 1
-				self.oven.targettemperature = targettemperature
-				self.programbuttons['targ'].configure(text = "Target: " + '{0:.1f}'.format(targettemperature))
-				h = int(nowtime/60/60)
-				m = int((nowtime -  (h * 60 * 60))/60)
-				s = int(nowtime - (h * 60 * 60 + m * 60))
+					print("nowtime ", nowtime)
+					for t in self.program["graph"]:
+						timesec = t["targettime"] * 60 * 60 
+						if (timesec < nowtime): # now has passed the timesec time
+							prevtime = timesec
+							prevtemp = t["temperature"]
+							if t["encountered"] == 0:
+								#print("encountered ", t)
+								# we encountered this point just now. Are we allowed>
+								offsettime = 0
+								try:
+									if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
+										print("mustreach ", t["mustreach"])
+										if t["rise"] and self.oven.temperature<t["temperature"]:
+											offsettime = 1
+										elif not t["rise"] and self.oven.temperature>t["temperature"]:
+											offsettime = 1
+								except Exception as e:
+									pass
 
-				self.programbuttons['runtime'].configure(text = str(h) + ":" + str(m) + ":" + str(s))
+								if offsettime:
+									#print("do offset!")
+									foundme = 0
+									self.mustreahtemperature = t["temperature"]
+									for off in self.program["graph"]:
+
+										if (off == t):
+											foundme = 1
+										
+										if (foundme):
+											#print("set ", off["targettime"])
+											off["targettime"] = float(off["targettime"]) + 1.0/60 #// move 1 minute ahead
+											#print("after ", off["targettime"])
+								else:
+									t["encountered"]=1
+									self.mustreahtemperature = 0
+
+						else:
+
+							nowfactor = (nowtime - prevtime) / (timesec - prevtime)
+							targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
+							break
+					if (self.mustreahtemperature):
+						targettemperature = self.mustreahtemperature
+					self.oven.trackTemperature = 1
+					self.oven.targettemperature = targettemperature
+					self.programbuttons['targ'].configure(text = "Target: " + '{0:.1f}'.format(targettemperature))
+					h = int(nowtime/60/60)
+					m = int((nowtime -  (h * 60 * 60))/60)
+					s = int(nowtime - (h * 60 * 60 + m * 60))
+
+					self.programbuttons['runtime'].configure(text = str(h) + ":" + str(m) + ":" + str(s))
 			else:
+				self.oven.cool()
 				self.oven.trackTemperature = 0
+				self.oven.targettemperature = 0
 
 
 		self.oven.update()
