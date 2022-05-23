@@ -27,8 +27,8 @@
 			{"time":1, "temperature":100},
 			{"time":3, "temperature":300},
 			{"time":6, "temperature":700, "mustreach" : 1},
-			{"time":8, "temperature":960, "mustreach" : 1},
-			{"time":8.5, "temperature":960}
+			{"time":8, "temperature":1000, "mustreach" : 1},
+			{"time":8.5, "temperature":1000}
 		]
 	},
 	"dry": {
