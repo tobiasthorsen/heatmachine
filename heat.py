@@ -60,7 +60,7 @@ class Oven:
 		self.closed = 1
 		self.thermocoupleOK = 1
 
-		self.kw = 2.7
+		self.kw = 3
 		self.kwhPrUpdate = (1.0 / 60 / 60 / 4) * (self.kw) # how many kwh pr update if on
 		
 		
