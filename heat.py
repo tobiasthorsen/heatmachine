@@ -27,9 +27,9 @@ windowWidth = 100
 windowHeight = 100
 
 PIN_OVENCONTROL = 4
-PIN_THERMO_PIN = 15
-PIN_THERMO_CLOCK = 14
-PIN_THERMO_DATA = 18 # cs_pin, clock_pin, data_pin
+PIN_THERMO_PIN = 15 #cs_pin
+PIN_THERMO_CLOCK = 14 # clock_pin
+PIN_THERMO_DATA = 18 #  data_pin
 PIN_SWITCH = 23
 
 
@@ -46,7 +46,7 @@ class Oven:
 		self.mode = "real"
 		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
 		GPIO.output(PIN_OVENCONTROL,  0)
-		
+									# cs_pin, clock_pin, data_pin,
 		self.thermocouple = MAX31855(PIN_THERMO_PIN,PIN_THERMO_CLOCK,PIN_THERMO_DATA)
 		if platform == "darwin":
 			self.mode = "simulated"
@@ -67,7 +67,9 @@ class Oven:
 		self.updatecount = 0
 		self.kwh = 0.0
 		self.trackstarttime = time.time()
-		self.calibrate1000 = 1000
+		#self.calibrate1000 = 1000
+		self.temperatureCalibrate = 1.25
+
 
 	def update(self):
 		if self.mode == "real":
@@ -76,7 +78,7 @@ class Oven:
 			gottemperature = 0
 			try:
 				tc = self.thermocouple.get()
-				tc = tc / self.calibrate1000 * 1000
+				tc = tc *self.temperatureCalibrate
 				self.temperature = tc
 				gottemperature = 1
 				self.thermocoupleOK = 1
@@ -188,6 +190,7 @@ class Application(tk.Frame):
 			file = open('./temperatures.json', 'r')
 			#print file
 			self.temparray = json.load(file)
+			
 		except:
   			print("No temperature file. It will be created")
   		
