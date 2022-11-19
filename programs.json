@@ -8,10 +8,11 @@
 		"type": "graph",
 		"graph" : [
 			{"time":0.1, "temperature":40},
-			{"time":4, "temperature":60},
-			{"time":5, "temperature":100},
-			{"time":10, "temperature":700},
-			{"time":13, "temperature":980, "mustreach" : 1}
+			{"time":4, "temperature":70},
+			{"time":6, "temperature":100},
+			{"time":7, "temperature":200},
+			{"time":11, "temperature":700},
+			{"time":14, "temperature":980, "mustreach" : 1}
 		]
 	},
 
