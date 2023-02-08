@@ -22,10 +22,12 @@
 			{"time":0.1, "temperature":40},
 			{"time":1, "temperature":100},
 			{"time":7, "temperature":700},
-			{"time":9, "temperature":980, "mustreach" : 1}
+			{"time":9, "temperature":980, "mustreach" : 1},  
 			{"time":9.5, "temperature":980}
 		]
 	},
+
+	
 	"glaze": {
 		"type": "graph",
 		"graph" : [
