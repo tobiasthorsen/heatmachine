@@ -23,6 +23,7 @@
 			{"time":1, "temperature":100},
 			{"time":7, "temperature":700},
 			{"time":9, "temperature":980, "mustreach" : 1}
+			{"time":9.5, "temperature":980}
 		]
 	},
 	"glaze": {
@@ -42,17 +43,17 @@
 			{"time":0.5, "temperature":100, "mustreach" : 1},
 			{"time":1, "temperature":120, "mustreach" : 1},
 			{"time":2, "temperature":140},
-			{"time":3.5, "temperature":200}
+			{"time":3.5, "temperature":140}
 		]
 	},
-	"heatfast": {
+	"drylong": {
 		"type": "graph",
 		"graph" : [
-			{"time":0.1, "temperature":100, "mustreach" : 1},
-			{"time":0.2, "temperature":200, "mustreach" : 1},
-			{"time":0.3, "temperature":300, "mustreach" : 1},
-			{"time":0.4, "temperature":300, "mustreach" : 1},
-			{"time":0.5, "temperature":300, "mustreach" : 1}
+			{"time":0.1, "temperature":40, "mustreach" : 1},
+			{"time":1.5, "temperature":80, "mustreach" : 1},
+			{"time":3.5, "temperature":90, "mustreach" : 1},
+			{"time":5, "temperature":100},
+			{"time":7, "temperature":120}
 		]
 	}
 }
