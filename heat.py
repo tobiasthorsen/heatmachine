@@ -59,6 +59,7 @@ class Oven:
 		self.trackTemperature = 0
 		self.closed = 1
 		self.thermocoupleOK = 1
+		self.maxtemperature = 12.0
 
 		self.kw = 3
 		self.kwhPrUpdate = (1.0 / 60 / 60 / 4) * (self.kw) # how many kwh pr update if on
@@ -89,7 +90,7 @@ class Oven:
 				#running = False
 
 			self.cputemperature = rj
-
+			self.maxtemperature = max(self.maxtemperature, self.temperature)
 			self.closed = GPIO.input(PIN_SWITCH) # input the lid status maybe
 		else:
 			# simulated oven
@@ -136,7 +137,8 @@ class Oven:
 		GPIO.output(PIN_OVENCONTROL,  0)
 		self.heating = 0
 			
-
+	def resetMaxTemperature(self):
+		self.maxtemperature = self.temperature
 
 		
 
@@ -915,9 +917,9 @@ class Application(tk.Frame):
 								try:
 									if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
 										print("mustreach ", t["mustreach"])
-										if t["rise"] and self.oven.temperature<t["temperature"]:
+										if t["rise"] and self.oven.maxtemperature<t["temperature"]:
 											offsettime = 1
-										elif not t["rise"] and self.oven.temperature>t["temperature"]:
+										elif not t["rise"] and self.oven.maxtemperature>t["temperature"]:
 											offsettime = 1
 								except Exception as e:
 									pass
@@ -946,6 +948,8 @@ class Application(tk.Frame):
 							break
 					if (self.mustreahtemperature):
 						targettemperature = self.mustreahtemperature
+
+					self.oven.resetMaxTemperature()
 					self.oven.trackTemperature = 1
 					self.oven.targettemperature = targettemperature
 					self.programbuttons['targ'].configure(text = "Target: " + '{0:.1f}'.format(targettemperature))

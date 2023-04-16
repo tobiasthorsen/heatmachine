@@ -36,13 +36,9 @@
 			{"time":3, "temperature":300},
 			{"time":5, "temperature":700, "mustreach" : 1},
 			{"time":7, "temperature":1020, "mustreach" : 1},
-			{"time":7.5, "temperature":1020},
-			{"time":8.5, "temperature":920},
-			{"time":9.5, "temperature":800},
-			{"time":10.5, "temperature":700},
-			{"time":11.5, "temperature":600},
-			{"time":12.5, "temperature":500},
-			{"time":13.5, "temperature":300}
+			{"time":7.33, "temperature":1020},
+			{"time":8, "temperature":920},
+			{"time":9, "temperature":800},
 		]
 	},
 	"dry": {
