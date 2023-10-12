@@ -12,7 +12,8 @@
 			{"time":6, "temperature":100},
 			{"time":7, "temperature":200},
 			{"time":11, "temperature":700},
-			{"time":14, "temperature":980, "mustreach" : 1}
+			{"time":14, "temperature":980, "mustreach" : 1},
+			{"time":14.5, "temperature":980 }
 		]
 	},
 
@@ -41,6 +42,19 @@
 			{"time":9, "temperature":800}
 		]
 	},
+	"dryglaze": {
+		"type": "graph",
+		"graph" : [
+			{"time":0.01, "temperature":60},
+			{"time":6, "temperature":100},
+			{"time":8, "temperature":300},
+			{"time":10, "temperature":700, "mustreach" : 1},
+			{"time":12, "temperature":1020, "mustreach" : 1},
+			{"time":12.33, "temperature":1020},
+			{"time":13, "temperature":920},
+			{"time":14, "temperature":800}
+		]
+	},
 	"dry": {
 		"type": "graph",
 		"graph" : [
@@ -49,15 +63,6 @@
 			{"time":2, "temperature":140},
 			{"time":3.5, "temperature":140}
 		]
-	},
-	"drylong": {
-		"type": "graph",
-		"graph" : [
-			{"time":0.1, "temperature":40, "mustreach" : 1},
-			{"time":1.5, "temperature":80, "mustreach" : 1},
-			{"time":3.5, "temperature":90, "mustreach" : 1},
-			{"time":5, "temperature":100},
-			{"time":7, "temperature":120}
-		]
 	}
+	
 }
