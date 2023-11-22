@@ -55,13 +55,17 @@
 			{"time":14, "temperature":800}
 		]
 	},
-	"dry": {
+	"HighGlaze": {
 		"type": "graph",
 		"graph" : [
-			{"time":0.5, "temperature":100, "mustreach" : 1},
-			{"time":1, "temperature":120, "mustreach" : 1},
-			{"time":2, "temperature":140},
-			{"time":3.5, "temperature":140}
+			{"time":0.01, "temperature":50},
+			{"time":1, "temperature":100},
+			{"time":3, "temperature":300},
+			{"time":5, "temperature":700, "mustreach" : 1},
+			{"time":7, "temperature":1100, "mustreach" : 1},
+			{"time":7.33, "temperature":1100},
+			{"time":8, "temperature":920},
+			{"time":9, "temperature":800}
 		]
 	}
 	
