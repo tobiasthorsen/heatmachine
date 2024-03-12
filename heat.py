@@ -539,7 +539,7 @@ class Application(tk.Frame):
 			btn = tk.Button(programSelectFrame, text=x, fg="red", width=10, height = 3, command=partial(self.onProgramClick, x))
 			btn.pack(side=LEFT)
 			separator = ttk.Separator(programSelectFrame, orient='vertical' )
-			separator.pack(side=LEFT, fill="y", padx=10, pady=0)
+			separator.pack(side=LEFT, fill="y", padx=9, pady=0)
 			self.programs[x]["button"] = btn
 			print(x)
 
