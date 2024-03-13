@@ -536,10 +536,10 @@ class Application(tk.Frame):
 		separator.pack(side=LEFT, fill="y", padx=10, pady=0)
 
 		for x in self.programs:
-			btn = tk.Button(programSelectFrame, text=x, fg="red", width=10, height = 3, command=partial(self.onProgramClick, x))
+			btn = tk.Button(programSelectFrame, text=x, fg="red", width=9, height = 3, command=partial(self.onProgramClick, x))
 			btn.pack(side=LEFT)
 			separator = ttk.Separator(programSelectFrame, orient='vertical' )
-			separator.pack(side=LEFT, fill="y", padx=9, pady=0)
+			separator.pack(side=LEFT, fill="y", padx=5, pady=0)
 			self.programs[x]["button"] = btn
 			print(x)
 
