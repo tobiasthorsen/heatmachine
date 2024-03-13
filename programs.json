@@ -77,7 +77,7 @@
 			{"time":2, "temperature":1020, "mustreach" : 1},
 			{"time":2.25, "temperature":1020}
 		]
-	}
+	},
 	"QuickHighGlaze": {
 		"type": "graph",
 		"graph" : [
