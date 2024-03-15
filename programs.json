@@ -87,7 +87,7 @@
 			{"time":2, "temperature":900},
 			{"time":3, "temperature":1000},
 			{"time":4.2, "temperature":1100},
-			{"time":6, "temperature":1200, "mustreach" : 1},}
+			{"time":6, "temperature":1200, "mustreach" : 1}
 		]
 	}
 }
