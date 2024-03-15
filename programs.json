@@ -78,14 +78,16 @@
 			{"time":2.25, "temperature":1020}
 		]
 	},
-	"QuickHighGlaze": {
+	"1200": {
 		"type": "graph",
 		"graph" : [
 			{"time":0.01, "temperature":50},
 			{"time":0.5, "temperature":200},
-			{"time":1.5, "temperature":600},
-			{"time":2, "temperature":1200, "mustreach" : 1},
-			{"time":2.25, "temperature":1200}
+			{"time":1, "temperature":600},
+			{"time":2, "temperature":900},
+			{"time":3, "temperature":1000},
+			{"time":4.2, "temperature":1100},
+			{"time":6, "temperature":1200, "mustreach" : 1},}
 		]
 	}
 }
