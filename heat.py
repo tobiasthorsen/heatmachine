@@ -967,12 +967,7 @@ class Application(tk.Frame):
 		self.oven.update()
 		
 		
-		if (self.oven.closed and not self.wasclosed):
-			self.temperatureLabel.config(bg="black")
-		elif (not self.oven.closed and self.wasclosed):
-			self.temperatureLabel.config(bg="blue")
 
-		self.wasclosed = self.oven.closed
 
 		#if (self.oven.closed): 
 			
@@ -984,6 +979,13 @@ class Application(tk.Frame):
 			self.temperatureLabel.config(bg="black")
 		
 		self.washeating = self.oven.heating
+
+        if (self.oven.closed and not self.wasclosed):
+            self.temperatureLabel.config(bg="black")
+        elif (not self.oven.closed and self.wasclosed):
+            self.temperatureLabel.config(bg="blue")
+
+        self.wasclosed = self.oven.closed
 
 		#if (self.oven.thermocoupleOK and not  self.wasthermocoupleOK):
 		#	self.ovenWarning.pack_forget()
