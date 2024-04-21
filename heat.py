@@ -52,6 +52,7 @@ class Oven:
 			self.mode = "simulated"
 		else:
 			GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		
 		self.temperature = 12.0
 		self.cputemperature = 12.0
 		self.heating = 0
@@ -92,6 +93,7 @@ class Oven:
 			self.cputemperature = rj
 			self.maxtemperature = max(self.maxtemperature, self.temperature)
 			self.closed = GPIO.input(PIN_SWITCH) # input the lid status maybe
+			print("selfclosed: ", self.closed)
 		else:
 			# simulated oven
 			#print("simul")
