@@ -51,7 +51,7 @@ class Oven:
 		if platform == "darwin":
 			self.mode = "simulated"
 		else:
-			GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+			GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		
 		self.temperature = 12.0
 		self.cputemperature = 12.0
