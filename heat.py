@@ -70,7 +70,7 @@ class Oven:
 		self.kwh = 0.0
 		self.trackstarttime = time.time()
 		#self.calibrate1000 = 1000
-		self.temperatureCalibrate = 1.07
+		self.temperatureCalibrate = 1.00
 
 
 	def update(self):
