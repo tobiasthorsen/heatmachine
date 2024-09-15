@@ -230,6 +230,15 @@ class Application(tk.Frame):
 				PIN_SWITCH = self.config["PIN_SWITCH"]
 				ovenKW = self.config["ovenKW"]
 				temperatureCalibrate = self.config["temperatureCalibrate"]
+				print("config PIN_OVENCONTROL", PIN_OVENCONTROL)
+				print("config PIN_THERMO_PIN", PIN_THERMO_PIN)
+				print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
+				print("config PIN_THERMO_DATA", PIN_THERMO_DATA)
+				print("config PIN_SWITCH", PIN_SWITCH)
+				print("config ovenKW", ovenKW)
+				print("config temperatureCalibrate", temperatureCalibrate)
+
+
 
 		except FileNotFoundError:
 			print("Config file not found. Using default values.")
