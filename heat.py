@@ -33,6 +33,8 @@ PIN_THERMO_DATA = 18 #  data_pin
 PIN_SWITCH = 23
 
 temperatureCalibrate = 1
+temperatureCalibrate100 = 1
+temperatureCalibrate800 = 1
 ovenKW = 3
 
 
@@ -47,6 +49,8 @@ class Oven:
 	def __init__(self):
 		global ovenKW
 		global temperatureCalibrate
+		global temperatureCalibrate100
+		global temperatureCalibrate800
 		self.mode = "real"
 		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
 		GPIO.output(PIN_OVENCONTROL,  0)
@@ -75,6 +79,8 @@ class Oven:
 		self.trackstarttime = time.time()
 		#self.calibrate1000 = 1000
 		self.temperatureCalibrate = temperatureCalibrate
+		self.temperatureCalibrate800 = temperatureCalibrate800
+		self.temperatureCalibrate100 = temperatureCalibrate100
 
 
 	def update(self):
@@ -84,7 +90,9 @@ class Oven:
 			gottemperature = 0
 			try:
 				tc = self.thermocouple.get()
-				tc = tc *self.temperatureCalibrate
+				calibfactor = 700 / (tc - 100) 
+				calibrate = self.temperatureCalibrate100 + (self.temperatureCalibrate800 - self.temperatureCalibrate100) * calibfactor
+				tc = tc * calibrate
 				self.temperature = tc
 				gottemperature = 1
 				self.thermocoupleOK = 1
@@ -192,6 +200,8 @@ class Application(tk.Frame):
 		global PIN_THERMO_DATA 
 		global PIN_SWITCH 
 		global temperatureCalibrate
+		global temperatureCalibrate800
+		global temperatureCalibrate100
 		global ovenKW
 
 		default_config = {
@@ -202,6 +212,8 @@ class Application(tk.Frame):
 			"PIN_SWITCH": PIN_SWITCH,
 			"manualtemperature": 40,
 			"temperatureCalibrate": temperatureCalibrate,
+			"temperatureCalibrate100": temperatureCalibrate100,
+			"temperatureCalibrate800": temperatureCalibrate800,
 			"ovenKW": ovenKW,
 			
 		}
@@ -241,6 +253,8 @@ class Application(tk.Frame):
 				print("config manualtemperature", self.config["manualtemperature"])
 				print("config ovenKW", ovenKW)
 				print("config temperatureCalibrate", temperatureCalibrate)
+				print("config temperatureCalibrate800", temperatureCalibrate800)
+				print("config temperatureCalibrate100", temperatureCalibrate100)
 				self.config["manualtemperature"] = int(self.config["manualtemperature"])
 
 
