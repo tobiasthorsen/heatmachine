@@ -245,6 +245,8 @@ class Application(tk.Frame):
 				PIN_SWITCH = self.config["PIN_SWITCH"]
 				ovenKW = self.config["ovenKW"]
 				temperatureCalibrate = self.config["temperatureCalibrate"]
+				temperatureCalibrate800 = self.config["temperatureCalibrate800"]
+				temperatureCalibrate100 = self.config["temperatureCalibrate100"]
 				print("config PIN_OVENCONTROL", PIN_OVENCONTROL)
 				print("config PIN_THERMO_PIN", PIN_THERMO_PIN)
 				print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
