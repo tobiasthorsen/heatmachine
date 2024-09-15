@@ -159,6 +159,7 @@ class Application(tk.Frame):
 		self.pack()
 		self.loadPrograms()
 		self.oven = Oven()
+		self.oven.targettemperature = self.config["manualtemperature"]
 		self.washeating = 0
 		self.wasclosed = 0
 		self.config = {}
@@ -221,7 +222,7 @@ class Application(tk.Frame):
 					self.config[key] = loaded_config.get(key, default_value)
 
 				# Update oven temperature and PINs
-				self.oven.targettemperature = self.config["manualtemperature"]
+				
 				PIN_OVENCONTROL = self.config["PIN_OVENCONTROL"]
 				PIN_THERMO_PIN = self.config["PIN_THERMO_PIN"]
 				PIN_THERMO_CLOCK = self.config["PIN_THERMO_CLOCK"]
