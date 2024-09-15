@@ -236,10 +236,10 @@ class Application(tk.Frame):
 				print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
 				print("config PIN_THERMO_DATA", PIN_THERMO_DATA)
 				print("config PIN_SWITCH", PIN_SWITCH)
-				print("config manualtemperature", manualtemperature)
+				print("config manualtemperature", self.config["manualtemperature"])
 				print("config ovenKW", ovenKW)
 				print("config temperatureCalibrate", temperatureCalibrate)
-
+				self.config["manualtemperature"] = int(self.oven.temperature)
 
 
 		except FileNotFoundError:
