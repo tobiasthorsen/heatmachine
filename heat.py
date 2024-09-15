@@ -32,6 +32,8 @@ PIN_THERMO_CLOCK = 14 # clock_pin
 PIN_THERMO_DATA = 18 #  data_pin
 PIN_SWITCH = 23
 
+temperatureCalibrate = 1
+ovenKW = 3
 
 
 def current_iso8601():
@@ -43,6 +45,8 @@ def current_iso8601():
 
 class Oven:
 	def __init__(self):
+		global ovenKW
+		global temperatureCalibrate
 		self.mode = "real"
 		GPIO.setup(PIN_OVENCONTROL, GPIO.OUT)
 		GPIO.output(PIN_OVENCONTROL,  0)
@@ -153,6 +157,7 @@ class Application(tk.Frame):
 		tk.Frame.__init__(self, master)
 		GPIO.setmode(GPIO.BCM)
 		self.pack()
+		self.loadPrograms()
 		self.oven = Oven()
 		self.washeating = 0
 		self.wasclosed = 0
@@ -166,7 +171,7 @@ class Application(tk.Frame):
 		self.programRunning = 0
 
 		#GPIO.setmode(GPIO.BOARD)
-		self.loadPrograms()
+		
 
 		self.setupTemperatureArray()
 		
@@ -174,17 +179,59 @@ class Application(tk.Frame):
 		self.onProgramClick("manual")
 		self.onUpdate() #// start updating
 	
+	import json
+
 	def loadPrograms(self):
-		file = open('./programs.json', 'r')
-		self.programs = json.load(file)
+		# Define default PIN values
+		global PIN_OVENCONTROL 
+		global PIN_THERMO_PIN
+		global PIN_THERMO_CLOCK 
+		global PIN_THERMO_DATA 
+		global PIN_SWITCH 
+		global temperatureCalibrate
+		global ovenKW
+
+		default_config = {
+			"PIN_OVENCONTROL": PIN_OVENCONTROL,
+			"PIN_THERMO_PIN": PIN_THERMO_PIN,
+			"PIN_THERMO_CLOCK": PIN_THERMO_CLOCK,
+			"PIN_THERMO_DATA": PIN_THERMO_DATA,
+			"PIN_SWITCH": PIN_SWITCH,
+			"manualtemperature": 40,
+			temperatureCalibrate: temperatureCalibrate,
+			ovenKW: ovenKW
+		}
+
+		# Load programs from the file
+		with open('./programs.json', 'r') as file:
+			self.programs = json.load(file)
+
 		self.programbuttons = {}
-		self.config["manualtemperature"] = 40
+
+		# Set default configuration
+		self.config = default_config.copy()
+
 		try:
-			file = open('./config.json', 'r')
-			self.config =  json.load(file)
-			self.oven.targettemperature = self.config["manualtemperature"] 
-		except:
-			print("No config file. It will be created")
+			# Load config from file if it exists
+			with open('./config.json', 'r') as file:
+				loaded_config = json.load(file)
+
+				# Update only existing keys in the loaded config, keep defaults otherwise
+				for key, default_value in self.config.items():
+					self.config[key] = loaded_config.get(key, default_value)
+
+				# Update oven temperature and PINs
+				self.oven.targettemperature = self.config["manualtemperature"]
+				PIN_OVENCONTROL = self.config["PIN_OVENCONTROL"]
+				PIN_THERMO_PIN = self.config["PIN_THERMO_PIN"]
+				PIN_THERMO_CLOCK = self.config["PIN_THERMO_CLOCK"]
+				PIN_THERMO_DATA = self.config["PIN_THERMO_DATA"]
+				PIN_SWITCH = self.config["PIN_SWITCH"]
+				ovenKW = self.config["ovenKW"]
+				temperatureCalibrate = self.config["temperatureCalibrate"]
+
+		except FileNotFoundError:
+			print("Config file not found. Using default values.")
 
 	def saveConfig(self):
 		cfile = open('./config.json', 'w')
