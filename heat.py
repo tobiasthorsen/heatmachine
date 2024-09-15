@@ -239,7 +239,7 @@ class Application(tk.Frame):
 				print("config manualtemperature", self.config["manualtemperature"])
 				print("config ovenKW", ovenKW)
 				print("config temperatureCalibrate", temperatureCalibrate)
-				self.config["manualtemperature"] = int(self.oven.temperature)
+				self.config["manualtemperature"] = int(self.config["manualtemperature"])
 
 
 		except FileNotFoundError:
