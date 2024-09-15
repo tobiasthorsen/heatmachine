@@ -157,8 +157,9 @@ class Application(tk.Frame):
 		tk.Frame.__init__(self, master)
 		GPIO.setmode(GPIO.BCM)
 		self.pack()
-		self.loadPrograms()
 		self.config = {}
+		self.loadPrograms()
+		
 		self.oven = Oven()
 		self.oven.targettemperature = self.config["manualtemperature"]
 		self.washeating = 0
