@@ -201,6 +201,7 @@ class Application(tk.Frame):
 			"manualtemperature": 40,
 			"temperatureCalibrate": temperatureCalibrate,
 			"ovenKW": ovenKW,
+			
 		}
 
 		# Load programs from the file
@@ -235,6 +236,7 @@ class Application(tk.Frame):
 				print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
 				print("config PIN_THERMO_DATA", PIN_THERMO_DATA)
 				print("config PIN_SWITCH", PIN_SWITCH)
+				print("config manualtemperature", manualtemperature)
 				print("config ovenKW", ovenKW)
 				print("config temperatureCalibrate", temperatureCalibrate)
 
