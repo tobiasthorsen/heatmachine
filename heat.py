@@ -199,8 +199,8 @@ class Application(tk.Frame):
 			"PIN_THERMO_DATA": PIN_THERMO_DATA,
 			"PIN_SWITCH": PIN_SWITCH,
 			"manualtemperature": 40,
-			temperatureCalibrate: temperatureCalibrate,
-			ovenKW: ovenKW,
+			"temperatureCalibrate": temperatureCalibrate,
+			"ovenKW": ovenKW,
 		}
 
 		# Load programs from the file
