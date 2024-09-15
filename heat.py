@@ -90,7 +90,7 @@ class Oven:
 			gottemperature = 0
 			try:
 				tc = self.thermocouple.get()
-				calibfactor = 700 / (tc - 100) 
+				calibfactor =   (tc - 100) / 700
 				calibrate = self.temperatureCalibrate100 + (self.temperatureCalibrate800 - self.temperatureCalibrate100) * calibfactor
 				tc = tc * calibrate
 				self.temperature = tc
