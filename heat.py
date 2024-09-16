@@ -245,10 +245,10 @@ class Application(tk.Frame):
 				#PIN_THERMO_CLOCK = self.config["PIN_THERMO_CLOCK"]
 				#PIN_THERMO_DATA = self.config["PIN_THERMO_DATA"]
 				#PIN_SWITCH = self.config["PIN_SWITCH"]
-				ovenKW = int(self.config["ovenKW"])
-				temperatureCalibrate = int(self.config["temperatureCalibrate"])
-				temperatureCalibrate800 = int(self.config["temperatureCalibrate800"])
-				temperatureCalibrate100 = int(self.config["temperatureCalibrate100"])
+				ovenKW = float(self.config["ovenKW"])
+				temperatureCalibrate = float(self.config["temperatureCalibrate"])
+				temperatureCalibrate800 = float(self.config["temperatureCalibrate800"])
+				temperatureCalibrate100 = float(self.config["temperatureCalibrate100"])
 				#print("config PIN_OVENCONTROL", PIN_OVENCONTROL)
 				#print("config PIN_THERMO_PIN", PIN_THERMO_PIN)
 				#print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
