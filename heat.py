@@ -194,22 +194,22 @@ class Application(tk.Frame):
 
 	def loadPrograms(self):
 		# Define default PIN values
-		global PIN_OVENCONTROL 
-		global PIN_THERMO_PIN
-		global PIN_THERMO_CLOCK 
-		global PIN_THERMO_DATA 
-		global PIN_SWITCH 
+		#global PIN_OVENCONTROL 
+		#global PIN_THERMO_PIN
+		#global PIN_THERMO_CLOCK 
+		#global PIN_THERMO_DATA 
+		#global PIN_SWITCH 
 		global temperatureCalibrate
 		global temperatureCalibrate800
 		global temperatureCalibrate100
 		global ovenKW
 
 		default_config = {
-			"PIN_OVENCONTROL": PIN_OVENCONTROL,
-			"PIN_THERMO_PIN": PIN_THERMO_PIN,
-			"PIN_THERMO_CLOCK": PIN_THERMO_CLOCK,
-			"PIN_THERMO_DATA": PIN_THERMO_DATA,
-			"PIN_SWITCH": PIN_SWITCH,
+			#//"PIN_OVENCONTROL": PIN_OVENCONTROL,
+			#//"PIN_THERMO_PIN": PIN_THERMO_PIN,
+			#//"PIN_THERMO_CLOCK": PIN_THERMO_CLOCK,
+			#//"PIN_THERMO_DATA": PIN_THERMO_DATA,
+			#//"PIN_SWITCH": PIN_SWITCH,
 			"manualtemperature": 40,
 			"temperatureCalibrate": temperatureCalibrate,
 			"temperatureCalibrate100": temperatureCalibrate100,
@@ -238,20 +238,20 @@ class Application(tk.Frame):
 
 				# Update oven temperature and PINs
 				
-				PIN_OVENCONTROL = self.config["PIN_OVENCONTROL"]
-				PIN_THERMO_PIN = self.config["PIN_THERMO_PIN"]
-				PIN_THERMO_CLOCK = self.config["PIN_THERMO_CLOCK"]
-				PIN_THERMO_DATA = self.config["PIN_THERMO_DATA"]
-				PIN_SWITCH = self.config["PIN_SWITCH"]
-				ovenKW = self.config["ovenKW"]
-				temperatureCalibrate = self.config["temperatureCalibrate"]
-				temperatureCalibrate800 = self.config["temperatureCalibrate800"]
-				temperatureCalibrate100 = self.config["temperatureCalibrate100"]
-				print("config PIN_OVENCONTROL", PIN_OVENCONTROL)
-				print("config PIN_THERMO_PIN", PIN_THERMO_PIN)
-				print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
-				print("config PIN_THERMO_DATA", PIN_THERMO_DATA)
-				print("config PIN_SWITCH", PIN_SWITCH)
+				#PIN_OVENCONTROL = self.config["PIN_OVENCONTROL"]
+				#PIN_THERMO_PIN = self.config["PIN_THERMO_PIN"]
+				#PIN_THERMO_CLOCK = self.config["PIN_THERMO_CLOCK"]
+				#PIN_THERMO_DATA = self.config["PIN_THERMO_DATA"]
+				#PIN_SWITCH = self.config["PIN_SWITCH"]
+				ovenKW = int(self.config["ovenKW"])
+				temperatureCalibrate = int(self.config["temperatureCalibrate"])
+				temperatureCalibrate800 = int(self.config["temperatureCalibrate800"])
+				temperatureCalibrate100 = int(self.config["temperatureCalibrate100"])
+				#print("config PIN_OVENCONTROL", PIN_OVENCONTROL)
+				#print("config PIN_THERMO_PIN", PIN_THERMO_PIN)
+				#print("config PIN_THERMO_CLOCK", PIN_THERMO_CLOCK)
+				#print("config PIN_THERMO_DATA", PIN_THERMO_DATA)
+				#print("config PIN_SWITCH", PIN_SWITCH)
 				print("config manualtemperature", self.config["manualtemperature"])
 				print("config ovenKW", ovenKW)
 				print("config temperatureCalibrate", temperatureCalibrate)
