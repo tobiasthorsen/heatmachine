@@ -93,6 +93,7 @@ class Oven:
 				print ("Raw temp ",  tc)
 				calibfactor =   (tc - 100) / 700
 				calibrate = self.temperatureCalibrate100 + (self.temperatureCalibrate800 - self.temperatureCalibrate100) * calibfactor
+				print ("Raw temp ",  tc, calibrate)
 				tc = tc * calibrate
 				self.temperature = tc
 				gottemperature = 1
