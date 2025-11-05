@@ -1,0 +1,4 @@
+RPi/
+__pycache__/
+.DS_Store/
+temperatures.json
