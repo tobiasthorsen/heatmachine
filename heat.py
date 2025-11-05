@@ -1020,7 +1020,7 @@ class Application(tk.Frame):
 										
 										if (foundme):
 											#print("set ", off["targettime"])
-											off["targettime"] = float(off["targettime"]) + 1.0/60 #// move 1 minute ahead
+											off["targettime"] = float(off["targettime"]) + 1.0/60/20 #// move 3 seconds
 											#print("after ", off["targettime"])
 								else:
 									t["encountered"]=1
