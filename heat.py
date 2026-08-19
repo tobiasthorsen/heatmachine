@@ -739,6 +739,27 @@ class Application(tk.Frame):
 		self.temperatureScaleFactor = max(0.1, self.temperatureScaleFactor - 0.05)
 		self.applyGraphScales()
 
+	def layoutGraphProgramControls(self, running=False):
+		self.programbuttons['l1'].place(x=210, y=8)
+		self.programbuttons['l2'].place(x=210, y=36)
+		self.programbuttons['runtime'].place(x=210, y=58)
+		self.programbuttons['targ'].place(x=210, y=80)
+
+		timeY = 108
+		for key, x in [('backbig', 210), ('back', 260), ('forward', 310), ('forwardbig', 360)]:
+			if running:
+				self.programbuttons[key].place(x=x, y=timeY)
+			else:
+				self.programbuttons[key].place_forget()
+
+		scaleY = 138 if running else 108
+		self.programbuttons['scaleDown'].place(x=210, y=scaleY)
+		self.programbuttons['scaleUp'].place(x=250, y=scaleY)
+		self.programbuttons['scaleTime'].place(x=290, y=scaleY + 2)
+		self.programbuttons['tempScaleDown'].place(x=370, y=scaleY)
+		self.programbuttons['tempScaleUp'].place(x=410, y=scaleY)
+		self.programbuttons['scaleTemp'].place(x=450, y=scaleY + 2)
+
 	def onProgramClick(self, program):
 		print("click program: ", program)
 		self.timeScaleFactor = 1.0
@@ -845,60 +866,44 @@ class Application(tk.Frame):
 				
 				
 
-			lbl = tk.Label(self.activeProgramFrame, text="Max temp: "+ str(maxtemp), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 25))
-			lbl.place(x=225,y=30)
+			lbl = tk.Label(self.activeProgramFrame, text="Max temp: "+ str(maxtemp), fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 22))
+			lbl.place(x=210,y=8)
 			self.programbuttons['l1'] = lbl
 			txt = "Duration " + str(maxhours) + " hours"
 			if (flex):
 				txt = txt + " (flex)"
-			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 16))
-			lbl.place(x=225,y=70)
+			lbl = tk.Label(self.activeProgramFrame, text=txt, fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 14))
+			lbl.place(x=210,y=36)
 			self.programbuttons['l2'] = lbl
-			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 16))
-			lbl.place(x=225,y=92)
+			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 14))
+			lbl.place(x=210,y=58)
 			self.programbuttons['runtime'] = lbl
 
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<<", fg="black", command=self.buttonClickTimeBackBig)
-			but.place(x=300, y=92)
-			but.place_forget()
-			self.programbuttons['backbig'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text="<", fg="black", command=self.buttonClickTimeBack)
-			but.place(x=350, y=92)
-			but.place_forget()
-			self.programbuttons['back'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
+			but =  tk.Button(self.activeProgramFrame, width=2, height=1, text="<<", fg="black", command=self.buttonClickTimeBackBig, font=("Arial Bold", 12))
+			self.programbuttons['backbig'] = but
+			but =  tk.Button(self.activeProgramFrame, width=2, height=1, text="<", fg="black", command=self.buttonClickTimeBack, font=("Arial Bold", 12))
+			self.programbuttons['back'] = but
+			but =  tk.Button(self.activeProgramFrame, width=2, height=1, text=">", fg="black", command=self.buttonClickTimeForward, font=("Arial Bold", 12))
+			self.programbuttons['forward'] = but
+			but =  tk.Button(self.activeProgramFrame, width=2, height=1, text=">>", fg="black", command=self.buttonClickTimeForwardBig, font=("Arial Bold", 12))
+			self.programbuttons['forwardbig'] = but
 
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">", fg="black", command=self.buttonClickTimeForward)
-			but.place(x=400, y=92)
-			but.place_forget()
-			self.programbuttons['forward'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-			but =  tk.Button(self.activeProgramFrame, width=2, height=2, text=">>", fg="black", command=self.buttonClickTimeForwardBig)
-			but.place(x=450, y=92)
-			but.place_forget()
-			self.programbuttons['forwardbig'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
-
-			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S-", fg="black", command=self.changeTimeScaleDown, font=("Arial Bold", 14))
-			but.place(x=300, y=125)
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S-", fg="black", command=self.changeTimeScaleDown, font=("Arial Bold", 12))
 			self.programbuttons['scaleDown'] = but
-			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S+", fg="black", command=self.changeTimeScaleUp, font=("Arial Bold", 14))
-			but.place(x=340, y=125)
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S+", fg="black", command=self.changeTimeScaleUp, font=("Arial Bold", 12))
 			self.programbuttons['scaleUp'] = but
-			lbl = tk.Label(self.activeProgramFrame, text="S:{0:.2f}".format(self.timeScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
-			lbl.place(x=380, y=125)
+			lbl = tk.Label(self.activeProgramFrame, text="S:{0:.2f}".format(self.timeScaleFactor), fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 11))
 			self.programbuttons['scaleTime'] = lbl
-			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T-", fg="black", command=self.changeTemperatureScaleDown, font=("Arial Bold", 14))
-			but.place(x=450, y=125)
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T-", fg="black", command=self.changeTemperatureScaleDown, font=("Arial Bold", 12))
 			self.programbuttons['tempScaleDown'] = but
-			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T+", fg="black", command=self.changeTemperatureScaleUp, font=("Arial Bold", 14))
-			but.place(x=490, y=125)
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T+", fg="black", command=self.changeTemperatureScaleUp, font=("Arial Bold", 12))
 			self.programbuttons['tempScaleUp'] = but
-			lbl = tk.Label(self.activeProgramFrame, text="T:{0:.2f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
-			lbl.place(x=530, y=125)
+			lbl = tk.Label(self.activeProgramFrame, text="T:{0:.2f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 11))
 			self.programbuttons['scaleTemp'] = lbl
 
-			
-			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
-			lbl.place(x=225,y=155)
+			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 12))
 			self.programbuttons['targ'] = lbl
+			self.layoutGraphProgramControls(running=self.programRunning)
 
 			
 			try:
@@ -1026,15 +1031,7 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.programbuttons['start'].config(state= DISABLED)
 		self.programbuttons['stop'].place(x=10, y=100)
-		
-		self.programbuttons['backbig'].place(x=350, y=102)
-		self.programbuttons['back'].place(x=400, y=102)
-		
-		self.programbuttons['forward'].place(x=450, y=102)
-		self.programbuttons['forwardbig'].place(x=500, y=102)
-		
-
-		
+		self.layoutGraphProgramControls(running=True)
 
 	def buttonClickStop(self):
 		self.programRunning = 0
@@ -1043,6 +1040,7 @@ class Application(tk.Frame):
 		self.oven.cool()
 		self.programbuttons['targ'].configure(text = "")
 		self.programbuttons['runtime'].configure(text = "")
+		self.layoutGraphProgramControls(running=False)
 
 	def onUpdate(self):
 		# update displayed time
