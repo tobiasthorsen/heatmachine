@@ -181,6 +181,8 @@ class Application(tk.Frame):
 		self.programstarttime = time.time()
 		self.mustreahtemperature = 0
 		self.zoomlevel = 1.0
+		self.timeScaleFactor = 1.0
+		self.temperatureScaleFactor = 1.0
 		self.programRunning = 0
 
 		#GPIO.setmode(GPIO.BOARD)
@@ -319,10 +321,12 @@ class Application(tk.Frame):
 		if (self.program["type"]=="graph"):
 			programtime = (nows - self.programstarttime) / 60 / 60
 			for t in self.program["graph"]:
-				if (t["temperature"] > tempmax):
-					tempmax = t["temperature"]
-				if (t["time"]-programtime   > hoursahead):
-					hoursahead = t["time"]-programtime
+				graphtemp = self.graphTemperature(t)
+				if (graphtemp > tempmax):
+					tempmax = graphtemp
+				graphtime = t["targettime"] if "targettime" in t else t["time"] / self.timeScaleFactor
+				if (graphtime-programtime   > hoursahead):
+					hoursahead = graphtime-programtime
 			if self.programRunning:
 				
 				if (programtime + .1 > hoursprev):
@@ -421,14 +425,16 @@ class Application(tk.Frame):
 		prevx = -1
 		prevy = 0
 		if (self.program["type"]=="graph"):
-			prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
+			prevy = self.canvas_height - self.graphTemperature(self.program["graph"][0]) * pixelsprdegree
 			startdisplaytime = nows
 			if self.programRunning:
 				startdisplaytime = self.programstarttime
 			for t in self.program["graph"]:
-				timesec = t["targettime"] * 60 * 60 + startdisplaytime
+				graphtime = t["targettime"] if "targettime" in t else t["time"] / self.timeScaleFactor
+				graphtemp = self.graphTemperature(t)
+				timesec = graphtime * 60 * 60 + startdisplaytime
 				x = (timesec - timestart ) / 60 * pixelsprminute
-				y = self.canvas_height - t["temperature"] * pixelsprdegree
+				y = self.canvas_height - graphtemp * pixelsprdegree
 				
 				self.temperatureCanvas.create_line(prevx,prevy,x,y, fill="gray")
 				
@@ -436,7 +442,7 @@ class Application(tk.Frame):
 				prevy = y
 
 				self.temperatureCanvas.create_line(x,y,x,y+15, fill="white")
-				self.temperatureCanvas.create_text(x, y + 20, text=str(int(t["temperature"])), fill="white", font=('Helvetica 10'))
+				self.temperatureCanvas.create_text(x, y + 20, text=str(int(graphtemp)), fill="white", font=('Helvetica 10'))
 
 				try:
 					if (t["mustreach"]):
@@ -673,8 +679,70 @@ class Application(tk.Frame):
 		self.drawTemperatureGraph()
 
 
+	def graphTemperature(self, point):
+		return point["temperature"] * self.temperatureScaleFactor
+
+	def applyGraphScales(self):
+		if self.program["type"] != "graph":
+			return
+		prevtemp = 0
+		maxtemp = 0
+		maxhours = 0
+		for p in self.program["graph"]:
+			p["targettime"] = p["time"] / self.timeScaleFactor
+			scaledtemp = self.graphTemperature(p)
+			if scaledtemp > maxtemp:
+				maxtemp = scaledtemp
+			if p["targettime"] > maxhours:
+				maxhours = p["targettime"]
+			if scaledtemp > prevtemp:
+				p["rise"] = 1
+			else:
+				p["rise"] = 0
+			prevtemp = scaledtemp
+		if not self.programRunning:
+			for p in self.program["graph"]:
+				p["encountered"] = 0
+		if "scaleTime" in self.programbuttons:
+			self.programbuttons["scaleTime"].configure(text="S:{0:.2f}".format(self.timeScaleFactor))
+		if "scaleTemp" in self.programbuttons:
+			self.programbuttons["scaleTemp"].configure(text="T:{0:.2f}".format(self.temperatureScaleFactor))
+		if "l1" in self.programbuttons:
+			self.programbuttons["l1"].configure(text="Max temp: " + str(int(maxtemp)))
+		if "l2" in self.programbuttons:
+			txt = "Duration " + str(round(maxhours, 2)) + " hours"
+			flex = 0
+			for g in self.program["graph"]:
+				try:
+					if g["mustreach"]:
+						flex = 1
+				except Exception:
+					pass
+			if flex:
+				txt = txt + " (flex)"
+			self.programbuttons["l2"].configure(text=txt)
+		self.drawTemperatureGraph()
+
+	def changeTimeScaleUp(self):
+		self.timeScaleFactor += 0.1
+		self.applyGraphScales()
+
+	def changeTimeScaleDown(self):
+		self.timeScaleFactor = max(0.1, self.timeScaleFactor - 0.1)
+		self.applyGraphScales()
+
+	def changeTemperatureScaleUp(self):
+		self.temperatureScaleFactor += 0.05
+		self.applyGraphScales()
+
+	def changeTemperatureScaleDown(self):
+		self.temperatureScaleFactor = max(0.1, self.temperatureScaleFactor - 0.05)
+		self.applyGraphScales()
+
 	def onProgramClick(self, program):
 		print("click program: ", program)
+		self.timeScaleFactor = 1.0
+		self.temperatureScaleFactor = 1.0
 		
 		#self.buttonClickStop()
 
@@ -808,9 +876,28 @@ class Application(tk.Frame):
 			but.place_forget()
 			self.programbuttons['forwardbig'] = but # tk.Button(self.activeProgramFrame, width=25, height=3, text="ON", fg="red", command=self.buttonClickOn)
 
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S-", fg="black", command=self.changeTimeScaleDown, font=("Arial Bold", 14))
+			but.place(x=300, y=125)
+			self.programbuttons['scaleDown'] = but
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S+", fg="black", command=self.changeTimeScaleUp, font=("Arial Bold", 14))
+			but.place(x=340, y=125)
+			self.programbuttons['scaleUp'] = but
+			lbl = tk.Label(self.activeProgramFrame, text="S:{0:.2f}".format(self.timeScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
+			lbl.place(x=380, y=125)
+			self.programbuttons['scaleTime'] = lbl
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T-", fg="black", command=self.changeTemperatureScaleDown, font=("Arial Bold", 14))
+			but.place(x=450, y=125)
+			self.programbuttons['tempScaleDown'] = but
+			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T+", fg="black", command=self.changeTemperatureScaleUp, font=("Arial Bold", 14))
+			but.place(x=490, y=125)
+			self.programbuttons['tempScaleUp'] = but
+			lbl = tk.Label(self.activeProgramFrame, text="T:{0:.2f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
+			lbl.place(x=530, y=125)
+			self.programbuttons['scaleTemp'] = lbl
+
 			
 			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
-			lbl.place(x=225,y=130)
+			lbl.place(x=225,y=155)
 			self.programbuttons['targ'] = lbl
 
 			
@@ -833,16 +920,10 @@ class Application(tk.Frame):
 					print("init", p)
 				self.program["initialized"] = 1
 
-			#prevtemp = self.oven.temperature
-			prevtemp = 0
 			for p in self.program["graph"]:
-				p["targettime"] = p["time"]
-				if p["temperature"]>prevtemp:
-					p["rise"] = 1
-				else:
-					p["rise"] = 0
-				prevtemp = p["temperature"]
 				p["encountered"] = 0
+			self.applyGraphScales()
+			return
 
 		self.drawTemperatureGraph()
 	
@@ -969,7 +1050,7 @@ class Application(tk.Frame):
 		
 		if (self.program["type"]=="graph"):
 			prevtime = 0
-			prevtemp = self.program["graph"][0]["temperature"]
+			prevtemp = self.graphTemperature(self.program["graph"][0])
 			#prevy = self.canvas_height - self.program["graph"][0]["temperature"] * pixelsprdegree
 			#startdisplaytime = nows
 			nowtime = time.time() - self.programstarttime
@@ -991,20 +1072,22 @@ class Application(tk.Frame):
 
 					print("nowtime ", nowtime)
 					for t in self.program["graph"]:
-						timesec = t["targettime"] * 60 * 60 
+						graphtemp = self.graphTemperature(t)
+						graphtime = t["targettime"] if "targettime" in t else t["time"] / self.timeScaleFactor
+						timesec = graphtime * 60 * 60 
 						if (timesec < nowtime): # now has passed the timesec time
 							prevtime = timesec
-							prevtemp = t["temperature"]
+							prevtemp = graphtemp
 							if t["encountered"] == 0:
 								#print("encountered ", t)
 								# we encountered this point just now. Are we allowed>
 								offsettime = 0
 								try:
-									if ( t['mustreach'] ): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
+									if ( t['mustreach'] and not self.reachedMustReachTemperature): #t["mustreach"]) :# hasattr(t, 'mustreach')) :# and t["mustreach"]):
 										print("mustreach ", t["mustreach"])
-										if t["rise"] and self.oven.maxtemperature<t["temperature"]:
+										if t["rise"] and self.oven.maxtemperature<graphtemp:
 											offsettime = 1
-										elif not t["rise"] and self.oven.maxtemperature>t["temperature"]:
+										elif not t["rise"] and self.oven.maxtemperature>graphtemp:
 											offsettime = 1
 								except Exception as e:
 									pass
@@ -1012,7 +1095,8 @@ class Application(tk.Frame):
 								if offsettime:
 									#print("do offset!")
 									foundme = 0
-									self.mustreahtemperature = t["temperature"]
+									self.mustreahtemperature = graphtemp
+									self.reachedMustReachTemperature = False
 									for off in self.program["graph"]:
 
 										if (off == t):
@@ -1020,19 +1104,21 @@ class Application(tk.Frame):
 										
 										if (foundme):
 											#print("set ", off["targettime"])
-											off["targettime"] = float(off["targettime"]) + 1.0/60/20 #// move 3 seconds
+											off["targettime"] = float(off["targettime"]) + 1.0/60/2 #// move half minute ahead
 											#print("after ", off["targettime"])
 								else:
 									t["encountered"]=1
 									self.mustreahtemperature = 0
-
+									self.reachedMustReachTemperature = False
 						else:
 
 							nowfactor = (nowtime - prevtime) / (timesec - prevtime)
-							targettemperature = prevtemp + (t["temperature"] - prevtemp) * nowfactor
+							targettemperature = prevtemp + (graphtemp - prevtemp) * nowfactor
 							break
 					if (self.mustreahtemperature):
 						targettemperature = self.mustreahtemperature
+						if (self.oven.targettemperature >= targettemperature):
+							self.reachedMustReachTemperature = True
 
 					self.oven.resetMaxTemperature()
 					self.oven.trackTemperature = 1
