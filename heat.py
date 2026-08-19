@@ -878,27 +878,21 @@ class Application(tk.Frame):
 
 			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S-", fg="black", command=self.changeTimeScaleDown, font=("Arial Bold", 14))
 			but.place(x=300, y=125)
-			but.place_forget()
 			self.programbuttons['scaleDown'] = but
 			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="S+", fg="black", command=self.changeTimeScaleUp, font=("Arial Bold", 14))
 			but.place(x=340, y=125)
-			but.place_forget()
 			self.programbuttons['scaleUp'] = but
 			lbl = tk.Label(self.activeProgramFrame, text="S:{0:.2f}".format(self.timeScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
 			lbl.place(x=380, y=125)
-			but.place_forget()
 			self.programbuttons['scaleTime'] = lbl
 			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T-", fg="black", command=self.changeTemperatureScaleDown, font=("Arial Bold", 14))
 			but.place(x=450, y=125)
-			but.place_forget()
 			self.programbuttons['tempScaleDown'] = but
 			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T+", fg="black", command=self.changeTemperatureScaleUp, font=("Arial Bold", 14))
 			but.place(x=490, y=125)
-			but.place_forget()
 			self.programbuttons['tempScaleUp'] = but
 			lbl = tk.Label(self.activeProgramFrame, text="T:{0:.2f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="center", justify="center", font=("Arial Bold", 12))
 			lbl.place(x=530, y=125)
-			but.place_forget()
 			self.programbuttons['scaleTemp'] = lbl
 
 			
