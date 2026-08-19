@@ -183,6 +183,7 @@ class Application(tk.Frame):
 		self.zoomlevel = 1.0
 		self.timeScaleFactor = 1.0
 		self.temperatureScaleFactor = 1.0
+		self.tempScaleStep = 0.05 / 3
 		self.programRunning = 0
 
 		#GPIO.setmode(GPIO.BOARD)
@@ -706,7 +707,7 @@ class Application(tk.Frame):
 		if "scaleTime" in self.programbuttons:
 			self.programbuttons["scaleTime"].configure(text="Speed: {0:.2f}".format(self.timeScaleFactor))
 		if "scaleTemp" in self.programbuttons:
-			self.programbuttons["scaleTemp"].configure(text="Temp: {0:.2f}".format(self.temperatureScaleFactor))
+			self.programbuttons["scaleTemp"].configure(text="Temp: {0:.3f}".format(self.temperatureScaleFactor))
 		if "l1" in self.programbuttons:
 			self.programbuttons["l1"].configure(text="Max temp: " + str(int(maxtemp)))
 		if "l2" in self.programbuttons:
@@ -732,11 +733,11 @@ class Application(tk.Frame):
 		self.applyGraphScales()
 
 	def changeTemperatureScaleUp(self):
-		self.temperatureScaleFactor += 0.05
+		self.temperatureScaleFactor += self.tempScaleStep
 		self.applyGraphScales()
 
 	def changeTemperatureScaleDown(self):
-		self.temperatureScaleFactor = max(0.1, self.temperatureScaleFactor - 0.05)
+		self.temperatureScaleFactor = max(0.1, self.temperatureScaleFactor - self.tempScaleStep)
 		self.applyGraphScales()
 
 	def layoutGraphProgramControls(self, running=False):
@@ -753,12 +754,12 @@ class Application(tk.Frame):
 			else:
 				self.programbuttons[key].place_forget()
 
-		scaleY = 130 if running else 100
+		scaleY = 142 if running else 100
 		for key, x in zip(['scaleDown', 'scaleUp', 'tempScaleDown', 'tempScaleUp'], btnCols):
 			self.programbuttons[key].place(x=x, y=scaleY)
 
 		self.programbuttons['scaleTime'].place(x=415, y=scaleY + 2)
-		self.programbuttons['scaleTemp'].place(x=520, y=scaleY + 2)
+		self.programbuttons['scaleTemp'].place(x=415, y=scaleY + 20)
 
 	def onProgramClick(self, program):
 		print("click program: ", program)
@@ -898,7 +899,7 @@ class Application(tk.Frame):
 			self.programbuttons['tempScaleDown'] = but
 			but = tk.Button(self.activeProgramFrame, width=2, height=1, text="T+", fg="black", command=self.changeTemperatureScaleUp, font=("Arial Bold", 12))
 			self.programbuttons['tempScaleUp'] = but
-			lbl = tk.Label(self.activeProgramFrame, text="Temp: {0:.2f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 11))
+			lbl = tk.Label(self.activeProgramFrame, text="Temp: {0:.3f}".format(self.temperatureScaleFactor), fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 11))
 			self.programbuttons['scaleTemp'] = lbl
 
 			lbl = tk.Label(self.activeProgramFrame, text="", fg="white", bg="black", anchor="w", justify="left", font=("Arial Bold", 12))
